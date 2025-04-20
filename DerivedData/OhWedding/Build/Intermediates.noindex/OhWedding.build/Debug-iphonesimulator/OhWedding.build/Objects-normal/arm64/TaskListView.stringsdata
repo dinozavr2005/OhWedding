@@ -1,0 +1,40 @@
+{
+  "source": "/Users/vladimir/Documents/Programing/OhWedding/OhWedding/OhWedding/Views/Task/TaskListView.swift",
+  "tables": {
+    "Localizable": [
+      {
+        "comment": "",
+        "key": "Задачи",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 47
+        }
+      },
+      {
+        "comment": "",
+        "key": "Рекомендации",
+        "location": {
+          "startingColumn": 50,
+          "startingLine": 9
+        }
+      },
+      {
+        "comment": "",
+        "key": "Задание для невесты",
+        "location": {
+          "startingColumn": 50,
+          "startingLine": 27
+        }
+      },
+      {
+        "comment": "",
+        "key": "Чек-лист для свадьбы",
+        "location": {
+          "startingColumn": 50,
+          "startingLine": 36
+        }
+      }
+    ]
+  },
+  "version": 1
+}

@@ -1,0 +1,200 @@
+{
+  "source": "/Users/vladimir/Documents/Programing/OhWedding/OhWedding/OhWedding/Views/BudgetView.swift",
+  "tables": {
+    "Localizable": [
+      {
+        "comment": "",
+        "key": "Бюджет",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 91
+        }
+      },
+      {
+        "comment": "",
+        "key": "Изменить бюджет",
+        "location": {
+          "startingColumn": 16,
+          "startingLine": 104
+        }
+      },
+      {
+        "comment": "",
+        "key": "Расходы по категориям",
+        "location": {
+          "startingColumn": 34,
+          "startingLine": 66
+        }
+      },
+      {
+        "comment": "",
+        "key": "Последние расходы",
+        "location": {
+          "startingColumn": 34,
+          "startingLine": 77
+        }
+      },
+      {
+        "comment": "",
+        "key": "Общий бюджет",
+        "location": {
+          "startingColumn": 34,
+          "startingLine": 17
+        }
+      },
+      {
+        "comment": "",
+        "key": "Потрачено",
+        "location": {
+          "startingColumn": 34,
+          "startingLine": 35
+        }
+      },
+      {
+        "comment": "",
+        "key": "Осталось",
+        "location": {
+          "startingColumn": 34,
+          "startingLine": 47
+        }
+      },
+      {
+        "comment": "",
+        "key": "Новый бюджет",
+        "location": {
+          "startingColumn": 23,
+          "startingLine": 105
+        }
+      },
+      {
+        "comment": "",
+        "key": "Отмена",
+        "location": {
+          "startingColumn": 20,
+          "startingLine": 108
+        }
+      },
+      {
+        "comment": "",
+        "key": "Сохранить",
+        "location": {
+          "startingColumn": 20,
+          "startingLine": 109
+        }
+      },
+      {
+        "comment": "",
+        "key": "Введите новую сумму бюджета",
+        "location": {
+          "startingColumn": 18,
+          "startingLine": 115
+        }
+      },
+      {
+        "comment": "",
+        "key": "Оплачено",
+        "location": {
+          "startingColumn": 43,
+          "startingLine": 211
+        }
+      },
+      {
+        "comment": "",
+        "key": "Не оплачено",
+        "location": {
+          "startingColumn": 64,
+          "startingLine": 211
+        }
+      },
+      {
+        "comment": "",
+        "key": "Новый расход",
+        "location": {
+          "startingColumn": 30,
+          "startingLine": 257
+        }
+      },
+      {
+        "comment": "",
+        "key": "Отмена",
+        "location": {
+          "startingColumn": 33,
+          "startingLine": 259
+        }
+      },
+      {
+        "comment": "",
+        "key": "Добавить",
+        "location": {
+          "startingColumn": 34,
+          "startingLine": 260
+        }
+      },
+      {
+        "comment": "",
+        "key": "Основная информация",
+        "location": {
+          "startingColumn": 38,
+          "startingLine": 238
+        }
+      },
+      {
+        "comment": "",
+        "key": "Дополнительно",
+        "location": {
+          "startingColumn": 38,
+          "startingLine": 251
+        }
+      },
+      {
+        "comment": "",
+        "key": "Название",
+        "location": {
+          "startingColumn": 31,
+          "startingLine": 239
+        }
+      },
+      {
+        "comment": "",
+        "key": "Сумма",
+        "location": {
+          "startingColumn": 31,
+          "startingLine": 240
+        }
+      },
+      {
+        "comment": "",
+        "key": "Категория",
+        "location": {
+          "startingColumn": 28,
+          "startingLine": 243
+        }
+      },
+      {
+        "comment": "",
+        "key": "Дата",
+        "location": {
+          "startingColumn": 32,
+          "startingLine": 252
+        }
+      },
+      {
+        "comment": "",
+        "key": "Оплачено",
+        "location": {
+          "startingColumn": 28,
+          "startingLine": 253
+        }
+      },
+      {
+        "comment": "",
+        "key": "Заметки",
+        "location": {
+          "startingColumn": 31,
+          "startingLine": 254
+        }
+      }
+    ]
+  },
+  "version": 1
+}

@@ -1,0 +1,18 @@
+"/Users/vladimir/Documents/Programing/OhWedding/OhWedding/OhWedding/ViewModels/ProgressViewModel.swift":
+  dependencies: "/Users/vladimir/Documents/Programing/OhWedding/OhWedding/DerivedData/OhWedding/Build/Intermediates.noindex/OhWedding.build/Debug-iphonesimulator/OhWedding.build/Objects-normal/arm64/ProgressViewModel.d"
+  swift-dependencies: "/Users/vladimir/Documents/Programing/OhWedding/OhWedding/DerivedData/OhWedding/Build/Intermediates.noindex/OhWedding.build/Debug-iphonesimulator/OhWedding.build/Objects-normal/arm64/ProgressViewModel.swiftdeps"
+  object: "/Users/vladimir/Documents/Programing/OhWedding/OhWedding/DerivedData/OhWedding/Build/Intermediates.noindex/OhWedding.build/Debug-iphonesimulator/OhWedding.build/Objects-normal/arm64/ProgressViewModel.o"
+  diagnostics: "/Users/vladimir/Documents/Programing/OhWedding/OhWedding/DerivedData/OhWedding/Build/Intermediates.noindex/OhWedding.build/Debug-iphonesimulator/OhWedding.build/Objects-normal/arm64/ProgressViewModel.dia"
+  const-values: "/Users/vladimir/Documents/Programing/OhWedding/OhWedding/DerivedData/OhWedding/Build/Intermediates.noindex/OhWedding.build/Debug-iphonesimulator/OhWedding.build/Objects-normal/arm64/ProgressViewModel.swiftconstvalues"
+"/Users/vladimir/Documents/Programing/OhWedding/OhWedding/OhWedding/ViewModels/HomeViewModel.swift":
+  swift-dependencies: "/Users/vladimir/Documents/Programing/OhWedding/OhWedding/DerivedData/OhWedding/Build/Intermediates.noindex/OhWedding.build/Debug-iphonesimulator/OhWedding.build/Objects-normal/arm64/HomeViewModel.swiftdeps"
+  object: "/Users/vladimir/Documents/Programing/OhWedding/OhWedding/DerivedData/OhWedding/Build/Intermediates.noindex/OhWedding.build/Debug-iphonesimulator/OhWedding.build/Objects-normal/arm64/HomeViewModel.o"
+  const-values: "/Users/vladimir/Documents/Programing/OhWedding/OhWedding/DerivedData/OhWedding/Build/Intermediates.noindex/OhWedding.build/Debug-iphonesimulator/OhWedding.build/Objects-normal/arm64/HomeViewModel.swiftconstvalues"
+  dependencies: "/Users/vladimir/Documents/Programing/OhWedding/OhWedding/DerivedData/OhWedding/Build/Intermediates.noindex/OhWedding.build/Debug-iphonesimulator/OhWedding.build/Objects-normal/arm64/HomeViewModel.d"
+  diagnostics: "/Users/vladimir/Documents/Programing/OhWedding/OhWedding/DerivedData/OhWedding/Build/Intermediates.noindex/OhWedding.build/Debug-iphonesimulator/OhWedding.build/Objects-normal/arm64/HomeViewModel.dia"
+"/Users/vladimir/Documents/Programing/OhWedding/OhWedding/OhWedding/ViewModels/TaskViewModel.swift":
+  diagnostics: "/Users/vladimir/Documents/Programing/OhWedding/OhWedding/DerivedData/OhWedding/Build/Intermediates.noindex/OhWedding.build/Debug-iphonesimulator/OhWedding.build/Objects-normal/arm64/TaskViewModel.dia"
+  swift-dependencies: "/Users/vladimir/Documents/Programing/OhWedding/OhWedding/DerivedData/OhWedding/Build/Intermediates.noindex/OhWedding.build/Debug-iphonesimulator/OhWedding.build/Objects-normal/arm64/TaskViewModel.swiftdeps"
+  object: "/Users/vladimir/Documents/Programing/OhWedding/OhWedding/DerivedData/OhWedding/Build/Intermediates.noindex/OhWedding.build/Debug-iphonesimulator/OhWedding.build/Objects-normal/arm64/TaskViewModel.o"
+  dependencies: "/Users/vladimir/Documents/Programing/OhWedding/OhWedding/DerivedData/OhWedding/Build/Intermediates.noindex/OhWedding.build/Debug-iphonesimulator/OhWedding.build/Objects-normal/arm64/TaskViewModel.d"
+  const-values: "/Users/vladimir/Documents/Programing/OhWedding/OhWedding/DerivedData/OhWedding/Build/Intermediates.noindex/OhWedding.build/Debug-iphonesimulator/OhWedding.build/Objects-normal/arm64/TaskViewModel.swiftconstvalues"

@@ -1,0 +1,40 @@
+{
+  "source": "/Users/vladimir/Documents/Programing/OhWedding/OhWedding/OhWedding/Views/Task/BrideAndGroomChecklistView.swift",
+  "tables": {
+    "Localizable": [
+      {
+        "comment": "",
+        "key": "Чек-лист жених и невеста",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 43
+        }
+      },
+      {
+        "comment": "",
+        "key": "Общее",
+        "location": {
+          "startingColumn": 34,
+          "startingLine": 14
+        }
+      },
+      {
+        "comment": "",
+        "key": "Невеста",
+        "location": {
+          "startingColumn": 34,
+          "startingLine": 23
+        }
+      },
+      {
+        "comment": "",
+        "key": "Жених",
+        "location": {
+          "startingColumn": 34,
+          "startingLine": 33
+        }
+      }
+    ]
+  },
+  "version": 1
+}

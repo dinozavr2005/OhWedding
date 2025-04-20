@@ -1,0 +1,48 @@
+{
+  "buildCommand" : {
+    "command" : "prepareForIndexing",
+    "enableIndexBuildArena" : true,
+    "targets" : null
+  },
+  "configuredTargets" : [
+    {
+      "guid" : "483aa87faf64b6caa7f17c95181851e6db8fbb9aa24a57ffba6e42e06d3fa79b"
+    }
+  ],
+  "containerPath" : "/Users/vladimir/Documents/Programing/OhWedding/OhWedding/OhWedding.xcodeproj",
+  "continueBuildingAfterErrors" : true,
+  "dependencyScope" : "workspace",
+  "enableIndexBuildArena" : false,
+  "hideShellScriptEnvironment" : false,
+  "parameters" : {
+    "action" : "indexbuild",
+    "arenaInfo" : {
+      "buildIntermediatesPath" : "/Users/vladimir/Documents/Programing/OhWedding/OhWedding/DerivedData/OhWedding/Index.noindex/Build/Intermediates.noindex",
+      "buildProductsPath" : "/Users/vladimir/Documents/Programing/OhWedding/OhWedding/DerivedData/OhWedding/Index.noindex/Build/Products",
+      "derivedDataPath" : "/Users/vladimir/Documents/Programing/OhWedding/OhWedding/DerivedData",
+      "indexDataStoreFolderPath" : "/Users/vladimir/Documents/Programing/OhWedding/OhWedding/DerivedData/OhWedding/Index.noindex/DataStore",
+      "indexEnableDataStore" : true,
+      "indexPCHPath" : "/Users/vladimir/Documents/Programing/OhWedding/OhWedding/DerivedData/OhWedding/Index.noindex/PrecompiledHeaders",
+      "indexRegularBuildIntermediatesPath" : "/Users/vladimir/Documents/Programing/OhWedding/OhWedding/DerivedData/OhWedding/Build/Intermediates.noindex",
+      "indexRegularBuildProductsPath" : "/Users/vladimir/Documents/Programing/OhWedding/OhWedding/DerivedData/OhWedding/Build/Products",
+      "pchPath" : "/Users/vladimir/Documents/Programing/OhWedding/OhWedding/DerivedData/OhWedding/Index.noindex/Build/Intermediates.noindex/PrecompiledHeaders"
+    },
+    "configurationName" : "Debug",
+    "overrides" : {
+      "synthesized" : {
+        "table" : {
+          "ENABLE_PREVIEWS" : "NO",
+          "ENABLE_XOJIT_PREVIEWS" : "NO",
+          "ONLY_ACTIVE_ARCH" : "YES"
+        }
+      }
+    }
+  },
+  "qos" : "utility",
+  "schemeCommand" : "launch",
+  "showNonLoggedProgress" : true,
+  "useDryRun" : false,
+  "useImplicitDependencies" : true,
+  "useLegacyBuildLocations" : false,
+  "useParallelTargets" : true
+}

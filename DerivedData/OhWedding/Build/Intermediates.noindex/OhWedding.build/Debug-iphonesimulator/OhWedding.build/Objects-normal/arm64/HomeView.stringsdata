@@ -1,0 +1,48 @@
+{
+  "source": "/Users/vladimir/Documents/Programing/OhWedding/OhWedding/OhWedding/Views/HomeView.swift",
+  "tables": {
+    "Localizable": [
+      {
+        "comment": "",
+        "key": "До свадьбы осталось",
+        "location": {
+          "startingColumn": 18,
+          "startingLine": 41
+        }
+      },
+      {
+        "comment": "",
+        "key": "%lld",
+        "location": {
+          "startingColumn": 18,
+          "startingLine": 43
+        }
+      },
+      {
+        "comment": "",
+        "key": "дней",
+        "location": {
+          "startingColumn": 18,
+          "startingLine": 46
+        }
+      },
+      {
+        "comment": "",
+        "key": "Вдохновение",
+        "location": {
+          "startingColumn": 46,
+          "startingLine": 89
+        }
+      },
+      {
+        "comment": "",
+        "key": "Прогресс подготовки",
+        "location": {
+          "startingColumn": 18,
+          "startingLine": 106
+        }
+      }
+    ]
+  },
+  "version": 1
+}

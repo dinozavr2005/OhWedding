@@ -1,0 +1,80 @@
+{
+  "source": "/Users/vladimir/Documents/Programing/OhWedding/OhWedding/OhWedding/Views/WeddingSettingsView.swift",
+  "tables": {
+    "Localizable": [
+      {
+        "comment": "",
+        "key": "Настройки свадьбы",
+        "location": {
+          "startingColumn": 30,
+          "startingLine": 59
+        }
+      },
+      {
+        "comment": "",
+        "key": "Отмена",
+        "location": {
+          "startingColumn": 33,
+          "startingLine": 61
+        }
+      },
+      {
+        "comment": "",
+        "key": "Сохранить",
+        "location": {
+          "startingColumn": 34,
+          "startingLine": 64
+        }
+      },
+      {
+        "comment": "",
+        "key": "Основная информация",
+        "location": {
+          "startingColumn": 38,
+          "startingLine": 17
+        }
+      },
+      {
+        "comment": "",
+        "key": "Фото",
+        "location": {
+          "startingColumn": 38,
+          "startingLine": 23
+        }
+      },
+      {
+        "comment": "",
+        "key": "Имя жениха",
+        "location": {
+          "startingColumn": 31,
+          "startingLine": 18
+        }
+      },
+      {
+        "comment": "",
+        "key": "Имя невесты",
+        "location": {
+          "startingColumn": 31,
+          "startingLine": 19
+        }
+      },
+      {
+        "comment": "",
+        "key": "Дата свадьбы",
+        "location": {
+          "startingColumn": 32,
+          "startingLine": 20
+        }
+      },
+      {
+        "comment": "",
+        "key": "Выбрать фото",
+        "location": {
+          "startingColumn": 38,
+          "startingLine": 50
+        }
+      }
+    ]
+  },
+  "version": 1
+}
