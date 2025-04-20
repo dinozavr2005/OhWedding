@@ -6,6 +6,90 @@
 	<integer>11</integer>
 	<key>logs</key>
 	<dict>
+		<key>31AA468A-EBE6-4D35-9734-2870B812FAA5</key>
+		<dict>
+			<key>className</key>
+			<string>IDEActivityLogSection</string>
+			<key>documentTypeString</key>
+			<string>&lt;nil&gt;</string>
+			<key>domainType</key>
+			<string>Xcode.IDEActivityLogDomainType.BuildLog</string>
+			<key>fileName</key>
+			<string>31AA468A-EBE6-4D35-9734-2870B812FAA5.xcactivitylog</string>
+			<key>hasPrimaryLog</key>
+			<true/>
+			<key>primaryObservable</key>
+			<dict>
+				<key>highLevelStatus</key>
+				<string>S</string>
+				<key>totalNumberOfAnalyzerIssues</key>
+				<integer>0</integer>
+				<key>totalNumberOfErrors</key>
+				<integer>0</integer>
+				<key>totalNumberOfTestFailures</key>
+				<integer>0</integer>
+				<key>totalNumberOfWarnings</key>
+				<integer>0</integer>
+			</dict>
+			<key>schemeIdentifier-containerName</key>
+			<string>OhWedding project</string>
+			<key>schemeIdentifier-schemeName</key>
+			<string>OhWedding</string>
+			<key>schemeIdentifier-sharedScheme</key>
+			<integer>1</integer>
+			<key>signature</key>
+			<string>Build (Automatic) OhWedding</string>
+			<key>timeStartedRecording</key>
+			<real>766833174.31044698</real>
+			<key>timeStoppedRecording</key>
+			<real>766833174.61729097</real>
+			<key>title</key>
+			<string>Build (Automatic) OhWedding</string>
+			<key>uniqueIdentifier</key>
+			<string>31AA468A-EBE6-4D35-9734-2870B812FAA5</string>
+		</dict>
+		<key>56D950C4-1C7C-4509-9B89-C9F7E8684042</key>
+		<dict>
+			<key>className</key>
+			<string>IDEActivityLogSection</string>
+			<key>documentTypeString</key>
+			<string>&lt;nil&gt;</string>
+			<key>domainType</key>
+			<string>Xcode.IDEActivityLogDomainType.BuildLog</string>
+			<key>fileName</key>
+			<string>56D950C4-1C7C-4509-9B89-C9F7E8684042.xcactivitylog</string>
+			<key>hasPrimaryLog</key>
+			<true/>
+			<key>primaryObservable</key>
+			<dict>
+				<key>highLevelStatus</key>
+				<string>W</string>
+				<key>totalNumberOfAnalyzerIssues</key>
+				<integer>0</integer>
+				<key>totalNumberOfErrors</key>
+				<integer>0</integer>
+				<key>totalNumberOfTestFailures</key>
+				<integer>0</integer>
+				<key>totalNumberOfWarnings</key>
+				<integer>1</integer>
+			</dict>
+			<key>schemeIdentifier-containerName</key>
+			<string>OhWedding project</string>
+			<key>schemeIdentifier-schemeName</key>
+			<string>OhWedding</string>
+			<key>schemeIdentifier-sharedScheme</key>
+			<integer>1</integer>
+			<key>signature</key>
+			<string>Build OhWedding</string>
+			<key>timeStartedRecording</key>
+			<real>766833117.155316</real>
+			<key>timeStoppedRecording</key>
+			<real>766833124.87102997</real>
+			<key>title</key>
+			<string>Build OhWedding</string>
+			<key>uniqueIdentifier</key>
+			<string>56D950C4-1C7C-4509-9B89-C9F7E8684042</string>
+		</dict>
 		<key>57F1477C-2DE5-48DC-8236-8F5C339C878C</key>
 		<dict>
 			<key>className</key>
@@ -47,6 +131,48 @@
 			<string>Build OhWedding</string>
 			<key>uniqueIdentifier</key>
 			<string>57F1477C-2DE5-48DC-8236-8F5C339C878C</string>
+		</dict>
+		<key>678B5B8B-7D0A-40C0-B7BC-67AA2E46DF8F</key>
+		<dict>
+			<key>className</key>
+			<string>IDEActivityLogSection</string>
+			<key>documentTypeString</key>
+			<string>&lt;nil&gt;</string>
+			<key>domainType</key>
+			<string>Xcode.IDEActivityLogDomainType.BuildLog</string>
+			<key>fileName</key>
+			<string>678B5B8B-7D0A-40C0-B7BC-67AA2E46DF8F.xcactivitylog</string>
+			<key>hasPrimaryLog</key>
+			<true/>
+			<key>primaryObservable</key>
+			<dict>
+				<key>highLevelStatus</key>
+				<string>W</string>
+				<key>totalNumberOfAnalyzerIssues</key>
+				<integer>0</integer>
+				<key>totalNumberOfErrors</key>
+				<integer>0</integer>
+				<key>totalNumberOfTestFailures</key>
+				<integer>0</integer>
+				<key>totalNumberOfWarnings</key>
+				<integer>1</integer>
+			</dict>
+			<key>schemeIdentifier-containerName</key>
+			<string>OhWedding project</string>
+			<key>schemeIdentifier-schemeName</key>
+			<string>OhWedding</string>
+			<key>schemeIdentifier-sharedScheme</key>
+			<integer>1</integer>
+			<key>signature</key>
+			<string>Build OhWedding</string>
+			<key>timeStartedRecording</key>
+			<real>766833189.75793803</real>
+			<key>timeStoppedRecording</key>
+			<real>766833190.140136</real>
+			<key>title</key>
+			<string>Build OhWedding</string>
+			<key>uniqueIdentifier</key>
+			<string>678B5B8B-7D0A-40C0-B7BC-67AA2E46DF8F</string>
 		</dict>
 	</dict>
 </dict>

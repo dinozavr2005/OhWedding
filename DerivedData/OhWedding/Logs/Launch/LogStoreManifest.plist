@@ -6,6 +6,67 @@
 	<integer>11</integer>
 	<key>logs</key>
 	<dict>
+		<key>C5F4C1F0-B021-454B-BE94-507FC867F121</key>
+		<dict>
+			<key>auxiliaryLogUniqueIdentifier</key>
+			<string>56D950C4-1C7C-4509-9B89-C9F7E8684042</string>
+			<key>auxiliaryObservable</key>
+			<dict>
+				<key>highLevelStatus</key>
+				<string>W</string>
+				<key>totalNumberOfAnalyzerIssues</key>
+				<integer>0</integer>
+				<key>totalNumberOfErrors</key>
+				<integer>0</integer>
+				<key>totalNumberOfTestFailures</key>
+				<integer>0</integer>
+				<key>totalNumberOfWarnings</key>
+				<integer>1</integer>
+			</dict>
+			<key>className</key>
+			<string>IDESchemeActionsInvocationRecord</string>
+			<key>documentTypeString</key>
+			<string>&lt;nil&gt;</string>
+			<key>domainType</key>
+			<string>com.apple.dt.IDE.LaunchSchemeAction</string>
+			<key>fileName</key>
+			<string>Run-OhWedding-2025.04.20_12-11-57-+0300.xcresult</string>
+			<key>hasAuxiliaryLog</key>
+			<true/>
+			<key>hasConsoleLog</key>
+			<true/>
+			<key>hasPrimaryLog</key>
+			<true/>
+			<key>primaryObservable</key>
+			<dict>
+				<key>highLevelStatus</key>
+				<string>E</string>
+				<key>totalNumberOfAnalyzerIssues</key>
+				<integer>0</integer>
+				<key>totalNumberOfErrors</key>
+				<integer>1</integer>
+				<key>totalNumberOfTestFailures</key>
+				<integer>0</integer>
+				<key>totalNumberOfWarnings</key>
+				<integer>1</integer>
+			</dict>
+			<key>schemeIdentifier-containerName</key>
+			<string>OhWedding project</string>
+			<key>schemeIdentifier-schemeName</key>
+			<string>OhWedding</string>
+			<key>schemeIdentifier-sharedScheme</key>
+			<integer>1</integer>
+			<key>signature</key>
+			<string>Run OhWedding</string>
+			<key>timeStartedRecording</key>
+			<real>766833117.15259397</real>
+			<key>timeStoppedRecording</key>
+			<real>0.0</real>
+			<key>title</key>
+			<string>Run OhWedding</string>
+			<key>uniqueIdentifier</key>
+			<string>C5F4C1F0-B021-454B-BE94-507FC867F121</string>
+		</dict>
 		<key>EF21A173-41DF-41B4-B961-C44A7B53CC89</key>
 		<dict>
 			<key>auxiliaryLogUniqueIdentifier</key>

@@ -1,0 +1,23 @@
+{
+  "DVTSourceControlWorkspaceBlueprintPrimaryRemoteRepositoryKey" : "9930006D5D4ED3B75F5528E7735034088AA0FC19",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyRepositoryLocationsKey" : {
+
+  },
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyStatesKey" : {
+    "9930006D5D4ED3B75F5528E7735034088AA0FC19" : 0
+  },
+  "DVTSourceControlWorkspaceBlueprintIdentifierKey" : "AE549649-0660-4F5B-AA73-F6B276F23337",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyPathsKey" : {
+    "9930006D5D4ED3B75F5528E7735034088AA0FC19" : "OhWedding\/"
+  },
+  "DVTSourceControlWorkspaceBlueprintNameKey" : "OhWedding",
+  "DVTSourceControlWorkspaceBlueprintVersion" : 204,
+  "DVTSourceControlWorkspaceBlueprintRelativePathToProjectKey" : "OhWedding.xcodeproj",
+  "DVTSourceControlWorkspaceBlueprintRemoteRepositoriesKey" : [
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/dinozavr2005\/OhWedding",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "9930006D5D4ED3B75F5528E7735034088AA0FC19"
+    }
+  ]
+}
