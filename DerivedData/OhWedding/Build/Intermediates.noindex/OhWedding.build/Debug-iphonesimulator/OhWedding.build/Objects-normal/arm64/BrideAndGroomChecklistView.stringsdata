@@ -4,34 +4,34 @@
     "Localizable": [
       {
         "comment": "",
-        "key": "Чек-лист жених и невеста",
+        "key": "Чек‑лист жених и невеста",
         "location": {
           "startingColumn": 26,
-          "startingLine": 43
+          "startingLine": 75
         }
       },
       {
         "comment": "",
         "key": "Общее",
         "location": {
-          "startingColumn": 34,
-          "startingLine": 14
+          "startingColumn": 30,
+          "startingLine": 18
         }
       },
       {
         "comment": "",
         "key": "Невеста",
         "location": {
-          "startingColumn": 34,
-          "startingLine": 23
+          "startingColumn": 30,
+          "startingLine": 38
         }
       },
       {
         "comment": "",
         "key": "Жених",
         "location": {
-          "startingColumn": 34,
-          "startingLine": 33
+          "startingColumn": 30,
+          "startingLine": 57
         }
       }
     ]

@@ -14,45 +14,42 @@ import func SwiftUI.__designTimeBoolean
 import SwiftUI
 
 struct BrideAndGroomChecklistView: View {
-    // Пример статических списков:
-    // (реальные данные можно тянуть из ViewModel или из JSON)
-    private let brideTasks = [
-        "Платье",
-        "Второе платье (по желанию)",
-        "Фата",
-        "Завок",
-        "Бельё",
-        "Утренний образ",
-        "Обувь"
-        // Добавьте остальные пункты...
-    ]
+    @StateObject private var viewModel = TaskViewModel()
 
-    private let groomTasks = [
-        "Костюм",
-        "Рубашка",
-        "Запасная рубашка (на случай)",
-        "Обувь",
-        "Галстук/бабочка/платок",
-        "Ремень",
-        "Носки"
-        // Добавьте остальные пункты...
-    ]
+    // Выбираем только индексы задач нужной категории
+    private var indices: [Int] {
+        viewModel.tasks.indices
+            .filter { viewModel.tasks[$0].category == .coupleChecklist }
+    }
 
     var body: some View {
         List {
-            Section(header: Text(__designTimeString("#14936_0", fallback: "Невеста"))) {
-                ForEach(brideTasks, id: \.self) { task in
-                    Label(task, systemImage: __designTimeString("#14936_1", fallback: "heart")) // или просто Text(task)
+            ForEach(indices, id: \.self) { idx in
+                HStack {
+                    // Кнопка‑чекбокс
+                    Button {
+                        viewModel.tasks[idx].isCompleted.toggle()
+                    } label: {
+                        Image(systemName: viewModel.tasks[idx].isCompleted
+                              ? __designTimeString("#14936_0", fallback: "checkmark.square")
+                              : __designTimeString("#14936_1", fallback: "square"))
+                            .foregroundColor(.blue)
+                    }
+                    .buttonStyle(PlainButtonStyle())
+
+                    // Заголовок задачи
+                    Text(viewModel.tasks[idx].title)
+                        .strikethrough(viewModel.tasks[idx].isCompleted, color: .gray)
+                        .foregroundColor(viewModel.tasks[idx].isCompleted ? .gray : .primary)
                 }
             }
-
-            Section(header: Text(__designTimeString("#14936_2", fallback: "Жених"))) {
-                ForEach(groomTasks, id: \.self) { task in
-                    Label(task, systemImage: __designTimeString("#14936_3", fallback: "suitcase")) // или просто Text(task)
-                }
+            .onDelete { offsets in
+                // Чтобы корректно удалить, переводим оффсеты индексов
+                let toDelete = offsets.map { indices[$0] }
+                toDelete.forEach { viewModel.deleteTask(viewModel.tasks[$0]) }
             }
         }
-        .navigationTitle(__designTimeString("#14936_4", fallback: "Чек-лист жених и невеста"))
+        .navigationTitle(__designTimeString("#14936_2", fallback: "Чек‑лист жених и невеста"))
     }
 }
 

@@ -21,27 +21,27 @@ struct TaskListView: View {
                     )
                 }
                 
-                NavigationLink(destination: Text(__designTimeString("#14716_3", fallback: "Чек-лист жених и невеста"))) {
+                NavigationLink(destination: BrideAndGroomChecklistView()) {
                     ChecklistCell(
-                        title: __designTimeString("#14716_4", fallback: "Чек-лист жених и невеста"),
+                        title: __designTimeString("#14716_3", fallback: "Чек-лист жених и невеста"),
                         completedCount: viewModel.coupleChecklistCompleted,
                         totalCount: viewModel.coupleChecklistTotal,
                         color: .pink
                     )
                 }
-                
-                NavigationLink(destination: Text(__designTimeString("#14716_5", fallback: "Задание для невесты"))) {
+
+                NavigationLink(destination: Text(__designTimeString("#14716_4", fallback: "Задание для невесты"))) {
                     ChecklistCell(
-                        title: __designTimeString("#14716_6", fallback: "Задание для невесты"),
+                        title: __designTimeString("#14716_5", fallback: "Задание для невесты"),
                         completedCount: viewModel.brideTasksCompleted,
                         totalCount: viewModel.brideTasksTotal,
                         color: .purple
                     )
                 }
                 
-                NavigationLink(destination: Text(__designTimeString("#14716_7", fallback: "Чек-лист для свадьбы"))) {
+                NavigationLink(destination: Text(__designTimeString("#14716_6", fallback: "Чек-лист для свадьбы"))) {
                     ChecklistCell(
-                        title: __designTimeString("#14716_8", fallback: "Чек-лист для свадьбы"),
+                        title: __designTimeString("#14716_7", fallback: "Чек-лист для свадьбы"),
                         completedCount: viewModel.weddingChecklistCompleted,
                         totalCount: viewModel.weddingChecklistTotal,
                         color: .green
@@ -50,8 +50,8 @@ struct TaskListView: View {
             }
             .padding()
         }
-        .navigationTitle(__designTimeString("#14716_9", fallback: "Задачи"))
-        .background(Color.gray.opacity(__designTimeFloat("#14716_10", fallback: 0.1)))
+        .navigationTitle(__designTimeString("#14716_8", fallback: "Задачи"))
+        .background(Color.gray.opacity(__designTimeFloat("#14716_9", fallback: 0.1)))
     }
 }
 
