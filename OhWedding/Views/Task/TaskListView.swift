@@ -15,17 +15,15 @@ struct TaskListView: View {
                     )
                 }
                 
-                NavigationLink {
-                    BrideAndGroomChecklistView()
-                        .environmentObject(viewModel)   // ← здесь
-                } label: {
+                NavigationLink(destination: BrideAndGroomChecklistView()) {
                     ChecklistCell(
-                        title: "Чек‑лист жених и невеста",
+                        title: "Чек-лист жених и невеста",
                         completedCount: viewModel.coupleChecklistCompleted,
                         totalCount: viewModel.coupleChecklistTotal,
                         color: .pink
                     )
                 }
+
                 NavigationLink(destination: Text("Задание для невесты")) {
                     ChecklistCell(
                         title: "Задание для невесты",
@@ -48,7 +46,6 @@ struct TaskListView: View {
         }
         .navigationTitle("Задачи")
         .background(Color.gray.opacity(0.1))
-        .environmentObject(viewModel)
     }
 }
 

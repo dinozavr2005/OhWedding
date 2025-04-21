@@ -1,3 +1,0 @@
-Target dependency graph (2 targets)
-Target 'OhWedding' in project 'OhWedding' (no dependencies)
-Target 'OhWedding' in project 'OhWedding' (no dependencies)
