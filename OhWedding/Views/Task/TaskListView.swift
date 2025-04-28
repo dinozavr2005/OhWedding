@@ -17,7 +17,7 @@ struct TaskListView: View {
                 
                 NavigationLink {
                     BrideAndGroomChecklistView()
-                        .environmentObject(viewModel)   // ← здесь
+                        .environmentObject(viewModel)
                 } label: {
                     ChecklistCell(
                         title: "Чек‑лист жених и невеста",

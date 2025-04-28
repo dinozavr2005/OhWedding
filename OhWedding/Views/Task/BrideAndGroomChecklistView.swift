@@ -9,6 +9,7 @@ import SwiftUI
 
 struct BrideAndGroomChecklistView: View {
     @EnvironmentObject var viewModel: TaskViewModel
+    @State private var isPresentingAdd = false
 
     var body: some View {
         List {
@@ -71,11 +72,26 @@ struct BrideAndGroomChecklistView: View {
             }
         }
         .listStyle(InsetGroupedListStyle())
-        .navigationTitle("Чек‑лист жених и невеста")
+        .navigationTitle("Чек-лист жених и невеста")
+        .toolbar {
+            // Кнопка «+»
+            ToolbarItem(placement: .navigationBarTrailing) {
+                Button {
+                    isPresentingAdd = true
+                } label: {
+                    Image(systemName: "plus")
+                }
+            }
+        }
+        // Модальный экран
+        .sheet(isPresented: $isPresentingAdd) {
+            AddTaskView(isPresented: $isPresentingAdd)
+                .environmentObject(viewModel)
+        }
     }
 }
 
 #Preview {
     BrideAndGroomChecklistView()
-        .environmentObject(TaskViewModel())  // <-- здесь тоже
+        .environmentObject(TaskViewModel())
 }

@@ -10,8 +10,8 @@ import Foundation
 struct WeddingChecklistData {
     /// Общие задачи, относящиеся ко всей свадьбе
     static let commonTasks: [WeddingTask] = [
-        WeddingTask(title: "Кольца", isCompleted: false, dueDate: Date(), category: .general),
-        WeddingTask(title: "Брачная ночь", isCompleted: false, dueDate: Date(), category: .general)
+        WeddingTask(title: "Кольца", isCompleted: false, dueDate: Date(), category: .coupleChecklist),
+        WeddingTask(title: "Брачная ночь", isCompleted: false, dueDate: Date(), category: .coupleChecklist)
     ]
 
     /// Задачи для невесты (все имеют категорию .coupleChecklist)
