@@ -1,12 +1,20 @@
+//
+//  TaskViewModel.swift
+//  OhWedding
+//
+//  Created by Buikliskii Vladimir on 26.04.2025.
+//
+
 import SwiftUI
 
 class TaskViewModel: ObservableObject {
     @Published var tasks: [WeddingTask] = []
+    @Published var assignments: [Assignment] = []
     @Published var selectedCategory: TaskCategory?
 
     init() {
-        // Загружаем из модели все задачи.
         self.tasks = WeddingChecklistData.allTasks
+        self.assignments = AssignmentData.assignments
     }
 
     // Возвращает все задачи для выбранной категории (если указана)
@@ -26,35 +34,40 @@ class TaskViewModel: ObservableObject {
         tasks.count
     }
 
-    // Добавляем вычисляемые свойства для каждой категории
-
     // Рекомендации
-    var recommendationsCompleted: Int {
-        tasks.filter { $0.category == .recommendations && $0.isCompleted }.count
+    var brideCheckListCompleted: Int {
+        tasks.filter { $0.category == .brideChecklist && $0.isCompleted }.count
     }
 
-    var recommendationsTotal: Int {
-        tasks.filter { $0.category == .recommendations }.count
+    var brideCheckListTotal: Int {
+        tasks.filter { $0.category == .brideChecklist }.count
     }
 
     // Чек-лист жених и невеста
-    var coupleChecklistCompleted: Int {
-        tasks.filter { $0.category == .coupleChecklist && $0.isCompleted }.count
+    var groomChecklistCompleted: Int {
+        tasks.filter { $0.category == .groomCheckList && $0.isCompleted }.count
     }
 
-    var coupleChecklistTotal: Int {
-        tasks.filter { $0.category == .coupleChecklist }.count
+    var groomChecklistTotal: Int {
+        tasks.filter { $0.category == .groomCheckList }.count
     }
 
     // Задание для невесты
     var brideTasksCompleted: Int {
-        tasks.filter { $0.category == .brideTasks && $0.isCompleted }.count
+        assignments.filter { $0.isCompleted }.count
     }
 
     var brideTasksTotal: Int {
-        tasks.filter { $0.category == .brideTasks }.count
+        assignments.count
     }
 
+    func toggleAssigmentCompletion(at index: Int) {
+        if let assignment = assignments.first(where: { $0.id == assignments[index].id }) {
+            if let assignmentIndex = assignments.firstIndex(where: { $0.id == assignment.id }) {
+                assignments[assignmentIndex].isCompleted.toggle()  // Переключаем статус выполнения
+            }
+        }
+    }
     // Чек-лист для свадьбы
     var weddingChecklistCompleted: Int {
         tasks.filter { $0.category == .weddingChecklist && $0.isCompleted }.count

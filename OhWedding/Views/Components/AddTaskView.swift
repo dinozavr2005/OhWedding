@@ -10,37 +10,46 @@ import SwiftUI
 struct AddTaskView: View {
     @EnvironmentObject var viewModel: TaskViewModel
     @Binding var isPresented: Bool
+    var category: TaskCategory  // Принимаем категорию задачи
 
-    @State private var title: String = ""
-    @State private var category: TaskCategory = .general
+    @State private var taskTitle: String = ""
 
-    // Категории, которые вам нужны именно в этом списке
-    private let sections: [TaskCategory] = [.general, .brideTasks, .coupleChecklist]
-
+    // Устанавливаем фон
     var body: some View {
         NavigationView {
-            Form {
-                Section(header: Text("Название задачи")) {
-                    TextField("Что нужно сделать", text: $title)
+            VStack {
+                TextField("Введите название задачи", text: $taskTitle)
+                    .textFieldStyle(RoundedBorderTextFieldStyle())
+                    .padding()
+
+                Button("Добавить задачу") {
+                    addTask()  // Добавляем задачу
                 }
+                .padding()
+
+                Spacer()
             }
-            .navigationTitle("Новая задача")
-            .navigationBarItems(
-                leading: Button("Отменить") {
-                    isPresented = false
-                },
-                trailing: Button("Сохранить") {
-                    let newTask = WeddingTask(
-                        title: title,
-                        isCompleted: false,
-                        dueDate: nil,
-                        category: category
-                    )
-                    viewModel.addTask(newTask)
-                    isPresented = false
-                }
-                .disabled(title.trimmingCharacters(in: .whitespaces).isEmpty)
-            )
+            .navigationTitle("Добавить задачу")
+            .navigationBarItems(trailing: Button("Закрыть") {
+                isPresented = false
+            })
+            .background(Color(.systemBackground))
         }
     }
+
+    private func addTask() {
+        // Создаем новую задачу
+        let newTask = WeddingTask(title: taskTitle, isCompleted: false, dueDate: Date(), category: category)
+
+        // Добавляем задачу в соответствующую категорию
+        viewModel.addTask(newTask)
+
+        // Закрываем модальное окно и обновляем список
+        isPresented = false
+    }
+}
+
+#Preview {
+    AddTaskView(isPresented: .constant(true), category: .weddingChecklist)
+        .environmentObject(TaskViewModel())
 }

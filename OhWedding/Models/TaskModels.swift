@@ -21,9 +21,10 @@ enum TaskCategory: String, CaseIterable {
 
     // Новые категории
     case recommendations  // Рекомендации
-    case coupleChecklist  // Чек-лист жених и невеста
+    case brideChecklist  // Чек-лист жених и невеста
     case brideTasks       // Задание для невесты
     case weddingChecklist // Чек-лист для свадьбы
+    case groomCheckList
 
     var icon: String {
         switch self {
@@ -37,9 +38,10 @@ enum TaskCategory: String, CaseIterable {
         case .photo: return "camera"
         case .transport: return "car"
         case .recommendations: return "star" // пример
-        case .coupleChecklist: return "checkmark.circle" // пример
+        case .brideChecklist: return "checkmark.circle" // пример
         case .brideTasks: return "heart" // пример
         case .weddingChecklist: return "bookmark" // пример
+        case .groomCheckList: return "person"
         }
     }
 }

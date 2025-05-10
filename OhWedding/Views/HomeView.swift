@@ -1,3 +1,10 @@
+//
+//  HomeView.swift
+//  OhWedding
+//
+//  Created by Buikliskii Vladimir on 13.04.2025.
+//
+
 import SwiftUI
 
 struct HomeView: View {

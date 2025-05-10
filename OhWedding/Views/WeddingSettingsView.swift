@@ -1,3 +1,10 @@
+//
+//  WeddingSettingsView.swift
+//  OhWedding
+//
+//  Created by Buikliskii Vladimir on 13.04.2025.
+//
+
 import SwiftUI
 import PhotosUI
 

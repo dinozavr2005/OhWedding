@@ -1,3 +1,10 @@
+//
+//  ChecklistCell.swift
+//  OhWedding
+//
+//  Created by Buikliskii Vladimir on 13.04.2025.
+//
+
 import SwiftUI
 
 struct ChecklistCell: View {
@@ -29,7 +36,7 @@ struct ChecklistCell: View {
             }
         }
         .padding(20)
-        .frame(height: 160)
+        .frame(height: 120)
         .frame(maxWidth: .infinity)
         .background(
             RoundedRectangle(cornerRadius: 15)
