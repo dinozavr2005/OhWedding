@@ -11,7 +11,8 @@ struct GuestListView: View {
     @StateObject private var viewModel = GuestViewModel()
     @State private var showingAddGuest = false
     @State private var selectedGuest: Guest?
-    
+    @State private var showingImportView = false
+
     var body: some View {
         List {
             // Guest summary
@@ -61,9 +62,13 @@ struct GuestListView: View {
         .searchable(text: $viewModel.searchText, prompt: "Поиск гостей")
         .navigationTitle("Гости")
         .toolbar {
-            ToolbarItem(placement: .navigationBarTrailing) {
+            ToolbarItemGroup(placement: .navigationBarTrailing) {
                 Button(action: { showingAddGuest = true }) {
                     Image(systemName: "person.badge.plus")
+                }
+
+                Button(action: { showingImportView = true }) {
+                    Image(systemName: "list.bullet.rectangle")
                 }
             }
         }
@@ -75,6 +80,11 @@ struct GuestListView: View {
         .sheet(item: $selectedGuest) { guest in
             GuestDetailView(guest: guest) { updatedGuest in
                 viewModel.updateGuest(updatedGuest)
+            }
+        }
+        .sheet(isPresented: $showingImportView) {
+            ImportGuestListView { importedGuests in
+                importedGuests.forEach { viewModel.addGuest($0) }
             }
         }
     }
