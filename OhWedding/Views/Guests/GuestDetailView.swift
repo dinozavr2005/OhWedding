@@ -33,7 +33,6 @@ struct GuestDetailView: View {
                 Section(header: Text("Контактная информация")) {
                     TextField("Имя", text: $editedGuest.name)
                     TextField("Телефон", text: $editedGuest.phone)
-                    TextField("Email", text: $editedGuest.email)
                 }
 
                 Section(header: Text("Дополнительно")) {

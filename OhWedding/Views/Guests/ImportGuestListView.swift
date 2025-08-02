@@ -97,7 +97,6 @@ struct ImportGuestListView: View {
 
             let guest = Guest(
                 name: name,
-                email: "",
                 group: "",
                 phone: "",
                 status: attending ? .invited : .declined,

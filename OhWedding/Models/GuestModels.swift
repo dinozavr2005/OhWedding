@@ -4,7 +4,6 @@ import SwiftUI
 struct Guest: Identifiable, Hashable {
     let id = UUID()
     var name: String
-    var email: String
     var group: String
     var phone: String
     var status: GuestStatus

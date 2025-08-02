@@ -11,7 +11,6 @@ struct AddGuestView: View {
     @Environment(\.dismiss) var dismiss
     @State private var name = ""
     @State private var phone = ""
-    @State private var email = ""
     @State private var plusOne = false
     @State private var dietaryRestrictions = ""
 
@@ -24,7 +23,6 @@ struct AddGuestView: View {
                 Section(header: Text("Основная информация")) {
                     TextField("Имя", text: $name)
                     TextField("Телефон", text: $phone)
-                    TextField("Email", text: $email)
                 }
 
                 Section(header: Text("Дополнительно")) {
@@ -38,7 +36,6 @@ struct AddGuestView: View {
                 trailing: Button("Добавить") {
                     let guest = Guest(
                         name: name,
-                        email: email,
                         group: "",               // Если не используется, оставляем пустым
                         phone: phone,
                         status: .invited,
@@ -49,7 +46,7 @@ struct AddGuestView: View {
                     onAdd(guest)
                     dismiss()
                 }
-                .disabled(name.isEmpty || phone.isEmpty)
+                .disabled(name.isEmpty)
             )
         }
     }
