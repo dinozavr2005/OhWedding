@@ -1,7 +1,7 @@
-import Foundation
+
 import SwiftUI
 
-struct Guest: Identifiable {
+struct Guest: Identifiable, Hashable {
     let id = UUID()
     var name: String
     var email: String

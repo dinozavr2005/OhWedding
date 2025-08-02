@@ -7,220 +7,180 @@
 
 import SwiftUI
 
+enum GuestViewSegment: String, CaseIterable {
+    case list = "Список"
+    case seating = "Рассадка"
+}
+
 struct GuestListView: View {
     @StateObject private var viewModel = GuestViewModel()
+
     @State private var showingAddGuest = false
-    @State private var selectedGuest: Guest?
     @State private var showingImportView = false
+    @State private var showingAddTable = false
+    @State private var showingSeatingDragView = false
+
+    @State private var selectedGuest: Guest?
+    @State private var selectedTable: SeatingTable?
+    @State private var selectedSegment: GuestViewSegment = .list
 
     var body: some View {
+        VStack(spacing: 0) {
+            // 1. Сегментированный контрол
+            Picker("", selection: $selectedSegment) {
+                ForEach(GuestViewSegment.allCases, id: \.self) { segment in
+                    Text(segment.rawValue).tag(segment)
+                }
+            }
+            .pickerStyle(.segmented)
+            .padding()
+
+            // 2. Поиск и список или сводка столов
+            if selectedSegment == .list {
+                TextField("Поиск гостей", text: $viewModel.searchText)
+                    .textFieldStyle(.roundedBorder)
+                    .padding(.horizontal)
+                    .padding(.bottom, 8)
+
+                listContent
+            } else {
+                seatingSummary
+            }
+        }
+        .navigationTitle("Гости")
+        .toolbar {
+            ToolbarItemGroup(placement: .navigationBarTrailing) {
+                if selectedSegment == .list {
+                    // Кнопки режима списка
+                    Button { showingAddGuest = true } label: {
+                        Image(systemName: "person.badge.plus")
+                    }
+                    Button { showingImportView = true } label: {
+                        Image(systemName: "list.bullet.rectangle")
+                    }
+                } else {
+                    // Кнопка режима рассадки
+                    Button { showingAddTable = true } label: {
+                        Image(systemName: "plus.circle")
+                    }
+                    Button { showingSeatingDragView = true } label: {
+                        Image(systemName: "square.grid.3x2")
+                    }
+                }
+            }
+        }
+        // Sheets for Guest
+        .sheet(isPresented: $showingAddGuest) {
+            AddGuestView { viewModel.addGuest($0) }
+        }
+        .sheet(item: $selectedGuest) { guest in
+            GuestDetailView(guest: guest) { viewModel.updateGuest($0) }
+        }
+        .sheet(isPresented: $showingImportView) {
+            ImportGuestListView { guests in
+                guests.forEach(viewModel.addGuest)
+            }
+        }
+        // Sheet for Table
+        .sheet(isPresented: $showingAddTable) {
+            AddTableView(
+                availableGuests: viewModel.unassignedGuests
+            ) { viewModel.addTable($0) }
+        }
+        .sheet(item: $selectedTable) { table in
+            EditTableView(
+                table: table,
+                availableGuests: viewModel.availableGuests(for: table)
+            ) { viewModel.updateTable($0) }
+        }
+        .sheet(isPresented: $showingSeatingDragView) {
+            SeatingDragView(
+                guests: viewModel.unassignedGuests,
+                tables: $viewModel.tables, // ← ВАЖНО: передаём биндинг
+                onUpdate: {} // можно оставить пустым или удалить параметр вообще
+            )
+        }
+    }
+
+    // MARK: — Контент списка гостей
+    private var listContent: some View {
         List {
-            // Guest summary
+            // Статистика гостей
             Section {
                 HStack {
-                    VStack(alignment: .leading) {
-                        Text("Всего гостей")
-                            .font(.caption)
-                            .foregroundColor(.secondary)
-                        Text("\(viewModel.totalGuests)")
-                            .font(.title2)
-                            .fontWeight(.bold)
-                    }
-                    
+                    statItem(title: "Всего гостей", value: viewModel.totalGuests)
                     Spacer()
-                    
-                    VStack(alignment: .trailing) {
-                        Text("Подтвердили")
-                            .font(.caption)
-                            .foregroundColor(.secondary)
-                        Text("\(viewModel.confirmedGuests)")
-                            .font(.title2)
-                            .fontWeight(.bold)
-                            .foregroundColor(.green)
-                    }
+                    statItem(title: "Подтвердили", value: viewModel.confirmedGuests, color: .green)
                 }
                 .padding(.vertical, 8)
             }
-            
-            // Guests list
+
+            // Список гостей
             Section {
                 ForEach(viewModel.filteredGuests) { guest in
                     GuestRow(guest: guest)
                         .contentShape(Rectangle())
-                        .onTapGesture {
-                            selectedGuest = guest
-                        }
+                        .onTapGesture { selectedGuest = guest }
                 }
-                .onDelete { indexSet in
-                    for index in indexSet {
-                        let guest = viewModel.filteredGuests[index]
-                        viewModel.deleteGuest(guest)
-                    }
+                .onDelete { offsets in
+                    offsets.map { viewModel.filteredGuests[$0] }
+                           .forEach(viewModel.deleteGuest)
                 }
             }
         }
-        .searchable(text: $viewModel.searchText, prompt: "Поиск гостей")
-        .navigationTitle("Гости")
-        .toolbar {
-            ToolbarItemGroup(placement: .navigationBarTrailing) {
-                Button(action: { showingAddGuest = true }) {
-                    Image(systemName: "person.badge.plus")
-                }
+        .listStyle(.insetGrouped)
+    }
 
-                Button(action: { showingImportView = true }) {
-                    Image(systemName: "list.bullet.rectangle")
-                }
-            }
-        }
-        .sheet(isPresented: $showingAddGuest) {
-            AddGuestView { guest in
-                viewModel.addGuest(guest)
-            }
-        }
-        .sheet(item: $selectedGuest) { guest in
-            GuestDetailView(guest: guest) { updatedGuest in
-                viewModel.updateGuest(updatedGuest)
-            }
-        }
-        .sheet(isPresented: $showingImportView) {
-            ImportGuestListView { importedGuests in
-                importedGuests.forEach { viewModel.addGuest($0) }
-            }
+    private func statItem(title: String, value: Int, color: Color = .primary) -> some View {
+        VStack(alignment: .leading) {
+            Text(title)
+                .font(.caption)
+                .foregroundColor(.secondary)
+            Text("\(value)")
+                .font(.title2).bold()
+                .foregroundColor(color)
         }
     }
-}
 
-struct GuestRow: View {
-    let guest: Guest
-    
-    var body: some View {
-        HStack {
-            VStack(alignment: .leading) {
-                Text(guest.name)
-                    .font(.headline)
-                
+    // MARK: — Контент режима рассадки
+    private var seatingSummary: some View {
+        List {
+            // Сводка столов
+            Section {
                 HStack {
-                    Image(systemName: "phone")
-                        .foregroundColor(.blue)
-                    Text(guest.phone)
-                        .font(.caption)
-                        .foregroundColor(.secondary)
+                    statItem(title: "Всего столов", value: viewModel.totalTables)
+                    Spacer()
+                    statItem(title: "Без места", value: viewModel.unassignedGuestsCount, color: .orange)
                 }
+                .padding(.vertical, 8)
             }
-            
-            Spacer()
-            
-            StatusBadge(status: guest.status)
-        }
-        .padding(.vertical, 4)
-    }
-}
 
-struct StatusBadge: View {
-    let status: GuestStatus
-    
-    var body: some View {
-        Text(status.rawValue)
-            .font(.caption)
-            .padding(.horizontal, 8)
-            .padding(.vertical, 4)
-            .background(status.color.opacity(0.2))
-            .foregroundColor(status.color)
-            .cornerRadius(8)
-    }
-}
-
-struct AddGuestView: View {
-    @Environment(\.dismiss) var dismiss
-    @State private var name = ""
-    @State private var phone = ""
-    @State private var email = ""
-    @State private var plusOne = false
-    @State private var dietaryRestrictions = ""
-
-    // onAdd возвращает созданного гостя
-    let onAdd: (Guest) -> Void
-
-    var body: some View {
-        NavigationView {
-            Form {
-                Section(header: Text("Основная информация")) {
-                    TextField("Имя", text: $name)
-                    TextField("Телефон", text: $phone)
-                    TextField("Email", text: $email)
-                }
-
-                Section(header: Text("Дополнительно")) {
-                    Toggle("+1", isOn: $plusOne)
-                    TextField("Ограничения в питании", text: $dietaryRestrictions)
-                }
-            }
-            .navigationTitle("Новый гость")
-            .navigationBarItems(
-                leading: Button("Отмена") { dismiss() },
-                trailing: Button("Добавить") {
-                    let guest = Guest(
-                        name: name,
-                        email: email,
-                        group: "",               // Если не используется, оставляем пустым
-                        phone: phone,
-                        status: .invited,
-                        plusOne: plusOne,
-                        dietaryRestrictions: dietaryRestrictions,
-                        notes: ""                // Если нет заметок, оставляем пустым
-                    )
-                    onAdd(guest)
-                    dismiss()
-                }
-                .disabled(name.isEmpty || phone.isEmpty)
-            )
-        }
-    }
-}
-
-struct GuestDetailView: View {
-    let guest: Guest
-    let onUpdate: (Guest) -> Void
-    @Environment(\.dismiss) var dismiss
-    @State private var editedGuest: Guest
-    
-    init(guest: Guest, onUpdate: @escaping (Guest) -> Void) {
-        self.guest = guest
-        self.onUpdate = onUpdate
-        _editedGuest = State(initialValue: guest)
-    }
-    
-    var body: some View {
-        NavigationView {
-            Form {
-                Section(header: Text("Статус")) {
-                    Picker("Статус", selection: $editedGuest.status) {
-                        ForEach(GuestStatus.allCases, id: \.self) { status in
-                            Text(status.rawValue).tag(status)
+            // Список столов
+            Section(header: Text("Столы")) {
+                ForEach(viewModel.tables) { table in
+                    HStack {
+                        VStack(alignment: .leading) {
+                            Text(table.name)
+                                .font(.headline)
+                            Text("\(table.guests.count) из \(table.capacity)")
+                                .font(.subheadline)
+                                .foregroundColor(.secondary)
                         }
+                        Spacer()
+                        Text(table.shape.rawValue)
+                            .font(.caption)
+                            .foregroundColor(.secondary)
                     }
+                    .contentShape(Rectangle())
+                    .onTapGesture { selectedTable = table }
                 }
-                
-                Section(header: Text("Контактная информация")) {
-                    TextField("Имя", text: $editedGuest.name)
-                    TextField("Телефон", text: $editedGuest.phone)
-                    TextField("Email", text: $editedGuest.email)
-                }
-                
-                Section(header: Text("Дополнительно")) {
-                    Toggle("+1", isOn: $editedGuest.plusOne)
-                    TextField("Ограничения в питании", text: $editedGuest.dietaryRestrictions)
+                .onDelete { offsets in
+                    offsets.map { viewModel.tables[$0] }
+                           .forEach(viewModel.deleteTable)
                 }
             }
-            .navigationTitle("Информация о госте")
-            .navigationBarItems(
-                leading: Button("Отмена") { dismiss() },
-                trailing: Button("Сохранить") {
-                    onUpdate(editedGuest)
-                    dismiss()
-                }
-            )
         }
+        .listStyle(.insetGrouped)
     }
 }
 
