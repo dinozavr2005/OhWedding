@@ -6,23 +6,27 @@
 //
 
 import SwiftUI
+import SwiftData
 
 struct AddGuestView: View {
-    @Environment(\.dismiss) var dismiss
+    @Environment(\.dismiss) private var dismiss
+    @Environment(\.modelContext) private var modelContext
+
     @State private var name = ""
     @State private var phone = ""
     @State private var plusOne = false
     @State private var dietaryRestrictions = ""
 
-    // onAdd возвращает созданного гостя
-    let onAdd: (Guest) -> Void
+    let viewModel: GuestViewModel
 
     var body: some View {
         NavigationView {
             Form {
                 Section(header: Text("Основная информация")) {
                     TextField("Имя", text: $name)
+                        .autocapitalization(.words)
                     TextField("Телефон", text: $phone)
+                        .keyboardType(.phonePad)
                 }
 
                 Section(header: Text("Дополнительно")) {
@@ -31,23 +35,26 @@ struct AddGuestView: View {
                 }
             }
             .navigationTitle("Новый гость")
-            .navigationBarItems(
-                leading: Button("Отмена") { dismiss() },
-                trailing: Button("Добавить") {
-                    let guest = Guest(
-                        name: name,
-                        group: "",               // Если не используется, оставляем пустым
-                        phone: phone,
-                        status: .invited,
-                        plusOne: plusOne,
-                        dietaryRestrictions: dietaryRestrictions,
-                        notes: ""                // Если нет заметок, оставляем пустым
-                    )
-                    onAdd(guest)
-                    dismiss()
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("Отмена") {
+                        dismiss()
+                    }
                 }
-                .disabled(name.isEmpty)
-            )
+                ToolbarItem(placement: .confirmationAction) {
+                    Button("Добавить") {
+                        viewModel.addGuest(
+                            using: modelContext,
+                            name: name,
+                            phone: phone,
+                            plusOne: plusOne,
+                            dietaryRestrictions: dietaryRestrictions
+                        )
+                        dismiss()
+                    }
+                    .disabled(name.trimmingCharacters(in: .whitespaces).isEmpty)
+                }
+            }
         }
     }
 }

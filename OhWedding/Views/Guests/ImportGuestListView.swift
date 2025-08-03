@@ -7,9 +7,12 @@
 
 import SwiftUI
 import Vision
+import SwiftData
 
 struct ImportGuestListView: View {
     @Environment(\.dismiss) var dismiss
+    @Environment(\.modelContext) var modelContext
+
     @State private var rawText: String = ""
     @State private var showingImagePicker = false
     @State private var imagePickerSource: ImagePicker.Source = .camera
@@ -64,9 +67,18 @@ struct ImportGuestListView: View {
                 leading: Button("Отмена") { dismiss() },
                 trailing: Button("Импорт") {
                     let guests = parseGuests(from: rawText)
-                    onImport(guests)
-                    dismiss()
-                }.disabled(rawText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
+                    for guest in guests {
+                        modelContext.insert(guest)
+                    }
+                    do {
+                        try modelContext.save()
+                        onImport(guests)
+                        dismiss()
+                    } catch {
+                        print("❌ Ошибка при сохранении импортированных гостей: \(error)")
+                    }
+                }
+                .disabled(rawText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
             )
         }
     }
@@ -95,17 +107,19 @@ struct ImportGuestListView: View {
 
             let name = trimmed.components(separatedBy: CharacterSet(charactersIn: "+(")).first?.trimmingCharacters(in: .whitespaces) ?? trimmed
 
-            let guest = Guest(
-                name: name,
-                group: "",
-                phone: "",
-                status: attending ? .invited : .declined,
-                plusOne: plusOne,
-                dietaryRestrictions: "",
-                notes: ""
-            )
+            if name.count < 2 { continue }
 
-            guests.append(guest)
+            guests.append(
+                Guest(
+                    name: name,
+                    group: "",
+                    phone: "",
+                    status: attending ? .invited : .declined,
+                    plusOne: plusOne,
+                    dietaryRestrictions: "",
+                    notes: ""
+                )
+            )
         }
 
         return guests
@@ -119,10 +133,25 @@ struct ImportGuestListView: View {
             guard let observations = request.results as? [VNRecognizedTextObservation] else { return }
 
             let recognizedStrings = observations.compactMap { $0.topCandidates(1).first?.string }
-            let fullText = recognizedStrings.joined(separator: "\n")
+
+            // 💡 Отфильтруем сразу
+            let filtered = recognizedStrings.filter { line in
+                let trimmed = line.trimmingCharacters(in: .whitespacesAndNewlines)
+
+                // Убираем короткие строки, числа, служебные слова
+                guard trimmed.count >= 2 else { return false }
+                if trimmed.range(of: #"^\d{1,2}[:\.]\d{1,2}$"#, options: .regularExpression) != nil { return false } // Время
+                if trimmed.range(of: #"^[\d\s\+\-\.]+$"#, options: .regularExpression) != nil { return false } // Числа
+                let systemWords = ["назад", "готово", "ввод", "пробел", "bl", "ok"]
+                if systemWords.contains(trimmed.lowercased()) { return false }
+
+                return true
+            }
+
+            let cleanText = filtered.joined(separator: "\n")
 
             DispatchQueue.main.async {
-                self.rawText = fullText
+                self.rawText = cleanText
             }
         }
 
@@ -134,5 +163,5 @@ struct ImportGuestListView: View {
             try? requestHandler.perform([request])
         }
     }
-}
 
+}

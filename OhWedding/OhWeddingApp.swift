@@ -11,7 +11,9 @@ import SwiftUI
 struct OhWeddingApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            MainTabView()
+                .environmentObject(AppModel.shared)
+                .modelContainer(AppModel.shared.modelContainer) // ← ВАЖНО
         }
     }
 }

@@ -7,12 +7,20 @@
 
 import Foundation
 
-struct SeatingTable: Identifiable {
-    let id = UUID()
-    var name: String            // Например: "Стол 1", "VIP", "Семья невесты"
-    var guests: [Guest]          // ID гостей, посаженных за стол
+class SeatingTable: Identifiable {
+    var id: UUID
+    var name: String
+    var guests: [Guest]
     var capacity: Int
     var shape: TableShape
+
+    init(id: UUID = UUID(), name: String, guests: [Guest] = [], capacity: Int, shape: TableShape) {
+        self.id = id
+        self.name = name
+        self.guests = guests
+        self.capacity = capacity
+        self.shape = shape
+    }
 }
 
 enum TableShape: String, CaseIterable, Identifiable {

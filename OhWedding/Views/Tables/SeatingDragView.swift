@@ -39,8 +39,8 @@ struct SeatingDragView: View {
                                 .background(Color.blue.opacity(0.2))
                                 .cornerRadius(8)
                                 .onDrag {
-                                    print("⬆️ Start dragging: \(guest.name) — \(guest.id)")
-                                    return NSItemProvider(object: guest.id.uuidString as NSString)
+                                    print("⬆️ Start dragging: \(guest.name) — \(guest.uuid)")
+                                    return NSItemProvider(object: guest.uuid.uuidString as NSString)
                                 }
                         }
                     }
@@ -62,12 +62,14 @@ struct SeatingDragView: View {
     private func handleDrop(_ guest: Guest, to index: Int) {
         print("📌 handleDrop called with guest: \(guest.name), table: \(tables[index].name)")
 
-        if tables[index].guests.contains(where: { $0.id == guest.id }) {
+        if tables[index].guests.contains(where: { $0.uuid == guest.uuid }) {
             print("⚠️ Guest already at this table")
             return
         }
 
-        tables[index].guests.append(guest)
+        var table = tables[index]
+        table.guests.append(guest)
+        tables[index] = table 
         print("✅ Guest added to table \(tables[index].name)")
     }
 }

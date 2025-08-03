@@ -13,6 +13,7 @@ enum GuestViewSegment: String, CaseIterable {
 }
 
 struct GuestListView: View {
+    @Environment(\.modelContext) private var modelContext
     @StateObject private var viewModel = GuestViewModel()
 
     @State private var showingAddGuest = false
@@ -26,126 +27,125 @@ struct GuestListView: View {
 
     var body: some View {
         VStack(spacing: 0) {
-            // 1. Сегментированный контрол
             Picker("", selection: $selectedSegment) {
-                ForEach(GuestViewSegment.allCases, id: \.self) { segment in
-                    Text(segment.rawValue).tag(segment)
+                ForEach(GuestViewSegment.allCases, id: \.self) {
+                    Text($0.rawValue).tag($0)
                 }
             }
             .pickerStyle(.segmented)
             .padding()
 
-            // 2. Поиск и список или сводка столов
             if selectedSegment == .list {
-                TextField("Поиск гостей", text: $viewModel.searchText)
-                    .textFieldStyle(.roundedBorder)
-                    .padding(.horizontal)
-                    .padding(.bottom, 8)
-
-                listContent
+                guestListSection
             } else {
-                seatingSummary
+                seatingSection
             }
         }
         .navigationTitle("Гости")
+        .onAppear {
+            viewModel.loadGuests(using: modelContext)
+        }
         .toolbar {
             ToolbarItemGroup(placement: .navigationBarTrailing) {
                 if selectedSegment == .list {
-                    // Кнопки режима списка
-                    Button { showingAddGuest = true } label: {
+                    Button {
+                        showingAddGuest = true
+                    } label: {
                         Image(systemName: "person.badge.plus")
                     }
-                    Button { showingImportView = true } label: {
+                    Button {
+                        showingImportView = true
+                    } label: {
                         Image(systemName: "list.bullet.rectangle")
                     }
                 } else {
-                    // Кнопка режима рассадки
-                    Button { showingAddTable = true } label: {
+                    Button {
+                        showingAddTable = true
+                    } label: {
                         Image(systemName: "plus.circle")
                     }
-                    Button { showingSeatingDragView = true } label: {
+                    Button {
+                        showingSeatingDragView = true
+                    } label: {
                         Image(systemName: "square.grid.3x2")
                     }
                 }
             }
         }
-        // Sheets for Guest
+        // Sheets
         .sheet(isPresented: $showingAddGuest) {
-            AddGuestView { viewModel.addGuest($0) }
+            AddGuestView(viewModel: viewModel)
         }
         .sheet(item: $selectedGuest) { guest in
-            GuestDetailView(guest: guest) { viewModel.updateGuest($0) }
+            GuestDetailView(guest: guest) { updatedGuest in
+                viewModel.updateGuest(using: modelContext, guest: updatedGuest) { _ in }
+            }
         }
         .sheet(isPresented: $showingImportView) {
             ImportGuestListView { guests in
-                guests.forEach(viewModel.addGuest)
+                viewModel.addGuests(using: modelContext, guests: guests)
             }
         }
-        // Sheet for Table
         .sheet(isPresented: $showingAddTable) {
-            AddTableView(
-                availableGuests: viewModel.unassignedGuests
-            ) { viewModel.addTable($0) }
+            AddTableView(availableGuests: viewModel.unassignedGuests) {
+                viewModel.addTable($0)
+            }
         }
         .sheet(item: $selectedTable) { table in
             EditTableView(
                 table: table,
                 availableGuests: viewModel.availableGuests(for: table)
-            ) { viewModel.updateTable($0) }
+            ) {
+                viewModel.updateTable($0)
+            }
         }
         .sheet(isPresented: $showingSeatingDragView) {
             SeatingDragView(
                 guests: viewModel.unassignedGuests,
-                tables: $viewModel.tables, // ← ВАЖНО: передаём биндинг
-                onUpdate: {} // можно оставить пустым или удалить параметр вообще
+                tables: $viewModel.tables,
+                onUpdate: { }
             )
         }
     }
 
-    // MARK: — Контент списка гостей
-    private var listContent: some View {
-        List {
-            // Статистика гостей
-            Section {
-                HStack {
-                    statItem(title: "Всего гостей", value: viewModel.totalGuests)
-                    Spacer()
-                    statItem(title: "Подтвердили", value: viewModel.confirmedGuests, color: .green)
-                }
-                .padding(.vertical, 8)
-            }
+    private var guestListSection: some View {
+        VStack(spacing: 0) {
+            TextField("Поиск гостей", text: $viewModel.searchText)
+                .textFieldStyle(.roundedBorder)
+                .padding(.horizontal)
+                .padding(.bottom, 8)
 
-            // Список гостей
-            Section {
-                ForEach(viewModel.filteredGuests) { guest in
-                    GuestRow(guest: guest)
-                        .contentShape(Rectangle())
-                        .onTapGesture { selectedGuest = guest }
+            List {
+                Section {
+                    HStack {
+                        statItem(title: "Всего гостей", value: viewModel.totalGuests)
+                        Spacer()
+                        statItem(title: "Подтвердили", value: viewModel.confirmedGuests, color: .green)
+                    }
+                    .padding(.vertical, 8)
                 }
-                .onDelete { offsets in
-                    offsets.map { viewModel.filteredGuests[$0] }
-                           .forEach(viewModel.deleteGuest)
+
+                Section {
+                    ForEach(viewModel.filteredGuests) { guest in
+                        GuestRow(guest: guest)
+                            .contentShape(Rectangle())
+                            .onTapGesture {
+                                selectedGuest = guest
+                            }
+                    }
+                    .onDelete { offsets in
+                        offsets
+                            .map { viewModel.filteredGuests[$0] }
+                            .forEach { viewModel.deleteGuest(using: modelContext, guest: $0) }
+                    }
                 }
             }
-        }
-        .listStyle(.insetGrouped)
-    }
-
-    private func statItem(title: String, value: Int, color: Color = .primary) -> some View {
-        VStack(alignment: .leading) {
-            Text(title)
-                .font(.caption)
-                .foregroundColor(.secondary)
-            Text("\(value)")
-                .font(.title2).bold()
-                .foregroundColor(color)
+            .listStyle(.insetGrouped)
         }
     }
 
-    // MARK: — Контент режима рассадки
-    private var seatingSummary: some View {
+    private var seatingSection: some View {
         List {
-            // Сводка столов
             Section {
                 HStack {
                     statItem(title: "Всего столов", value: viewModel.totalTables)
@@ -155,7 +155,6 @@ struct GuestListView: View {
                 .padding(.vertical, 8)
             }
 
-            // Список столов
             Section(header: Text("Столы")) {
                 ForEach(viewModel.tables) { table in
                     HStack {
@@ -172,20 +171,36 @@ struct GuestListView: View {
                             .foregroundColor(.secondary)
                     }
                     .contentShape(Rectangle())
-                    .onTapGesture { selectedTable = table }
+                    .onTapGesture {
+                        selectedTable = table
+                    }
                 }
                 .onDelete { offsets in
-                    offsets.map { viewModel.tables[$0] }
-                           .forEach(viewModel.deleteTable)
+                    offsets
+                        .map { viewModel.tables[$0] }
+                        .forEach(viewModel.deleteTable)
                 }
             }
         }
         .listStyle(.insetGrouped)
     }
+
+    private func statItem(title: String, value: Int, color: Color = .primary) -> some View {
+        VStack(alignment: .leading) {
+            Text(title)
+                .font(.caption)
+                .foregroundColor(.secondary)
+            Text("\(value)")
+                .font(.title2).bold()
+                .foregroundColor(color)
+        }
+    }
 }
+
 
 #Preview {
     NavigationView {
         GuestListView()
+            .environmentObject(AppModel.shared)
     }
-} 
+}

@@ -64,7 +64,7 @@ struct SeatingTableView: View {
                         return
                     }
 
-                    guard let guest = allGuests.first(where: { $0.id == guestID }) else {
+                    guard let guest = allGuests.first(where: { $0.uuid == guestID }) else {
                         print("❌ Guest not found in allGuests")
                         return
                     }
