@@ -97,22 +97,30 @@ struct SeatingDragView: View {
 
     // MARK: - Логика перемещения
 
+
     private func handleDrop(_ guest: Guest, to table: SeatingTable) {
-        // убрать гостя из всех столов
+        // Убираем из всех столов
         for i in tables.indices {
             tables[i].guests.removeAll { $0.uuid == guest.uuid }
         }
-        // добавить в целевой
+
+        // Назначаем новый стол прямо в модели гостя (важно для SwiftData)
+        guest.seatingTable = table
+
+        // Добавляем в выбранный стол
         if let idx = tables.firstIndex(where: { $0.uuid == table.uuid }) {
             tables[idx].guests.append(guest)
         }
     }
 
     private func handleReturn(_ guest: Guest) {
-        // убрать гостя из всех столов (вернётся в низ автоматически)
+        // Убираем из всех столов
         for i in tables.indices {
             tables[i].guests.removeAll { $0.uuid == guest.uuid }
         }
+
+        // Освобождаем место — теперь гость без стола
+        guest.seatingTable = nil
     }
 
     // MARK: - Вычисляемые данные

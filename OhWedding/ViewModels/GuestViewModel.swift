@@ -7,6 +7,22 @@ final class GuestViewModel: ObservableObject {
     @Published var searchText: String = ""
     @Published var tables: [SeatingTable] = []
 
+    var totalGuestsWithPlusOne: Int {
+        guests.reduce(0) { $0 + ($1.plusOne ? 2 : 1) }
+    }
+
+    var confirmedGuestsWithPlusOne: Int {
+        guests
+            .filter { $0.status == .confirmed }
+            .reduce(0) { $0 + ($1.plusOne ? 2 : 1) }
+    }
+
+    var unassignedGuestsCountWithPlusOne: Int {
+        guests
+            .filter { $0.seatingTable == nil }
+            .reduce(0) { $0 + ($1.plusOne ? 2 : 1) }
+    }
+
     init() {}
 
     // MARK: - Guests

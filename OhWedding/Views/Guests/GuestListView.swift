@@ -128,9 +128,9 @@ struct GuestListView: View {
             List {
                 Section {
                     HStack {
-                        statItem(title: "Всего гостей", value: viewModel.totalGuests)
+                        statItem(title: "Всего гостей", value: viewModel.totalGuestsWithPlusOne)
                         Spacer()
-                        statItem(title: "Подтвердили", value: viewModel.confirmedGuests, color: .green)
+                        statItem(title: "Подтвердили", value: viewModel.confirmedGuestsWithPlusOne, color: .green)
                     }
                     .padding(.vertical, 8)
                 }
@@ -167,7 +167,7 @@ struct GuestListView: View {
                 HStack {
                     statItem(title: "Всего столов", value: viewModel.totalTables)
                     Spacer()
-                    statItem(title: "Без места", value: viewModel.unassignedGuestsCount, color: .orange)
+                    statItem(title: "Без места", value: viewModel.unassignedGuestsCountWithPlusOne, color: .orange)
                 }
                 .padding(.vertical, 8)
             }
