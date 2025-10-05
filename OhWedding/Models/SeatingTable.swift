@@ -6,16 +6,20 @@
 //
 
 import Foundation
+import SwiftData
 
-class SeatingTable: Identifiable {
-    var id: UUID
+@Model
+final class SeatingTable {
+    @Attribute(.unique)
+    var uuid: UUID
     var name: String
+    @Relationship(deleteRule: .nullify, inverse: \Guest.seatingTable)
     var guests: [Guest]
     var capacity: Int
     var shape: TableShape
 
-    init(id: UUID = UUID(), name: String, guests: [Guest] = [], capacity: Int, shape: TableShape) {
-        self.id = id
+    init(uuid: UUID = UUID(), name: String, guests: [Guest] = [], capacity: Int, shape: TableShape) {
+        self.uuid = uuid
         self.name = name
         self.guests = guests
         self.capacity = capacity
@@ -23,7 +27,7 @@ class SeatingTable: Identifiable {
     }
 }
 
-enum TableShape: String, CaseIterable, Identifiable {
+enum TableShape: String, Codable, CaseIterable, Identifiable {
     case round = "Круглый"
     case rectangular = "Прямоугольный"
     case square = "Квадратный"

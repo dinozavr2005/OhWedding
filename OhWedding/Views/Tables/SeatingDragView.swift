@@ -13,39 +13,75 @@ struct SeatingDragView: View {
     let onUpdate: () -> Void
     @Environment(\.dismiss) private var dismiss
 
-    static var draggedGuest: Guest?
+    // --- сетка столов: 2 колонки ---
+    private let tableColumns = [
+        GridItem(.flexible(minimum: 120), spacing: 20),
+        GridItem(.flexible(minimum: 120), spacing: 20)
+    ]
+
+    // --- две строки для гостей ---
+    private let guestRows = [
+        GridItem(.fixed(40), spacing: 10),
+        GridItem(.fixed(40), spacing: 10)
+    ]
 
     var body: some View {
         NavigationView {
-            VStack {
-                ScrollView(.horizontal) {
-                    HStack(spacing: 20) {
-                        ForEach(tables.indices, id: \.self) { index in
-                            SeatingTableView(table: tables[index], allGuests: guests) { guest in
-                                handleDrop(guest, to: index)
-                            }
+            VStack(spacing: 0) {
+
+                // --- Столы ---
+                ScrollView(.vertical, showsIndicators: true) {
+                    LazyVGrid(columns: tableColumns, spacing: 20) {
+                        ForEach(tables, id: \.uuid) { table in
+                            SeatingTableView(table: table,
+                                             allGuests: guests,
+                                             onDropGuest: { guest in
+                                handleDrop(guest, to: table)
+                            })
+                            .frame(minHeight: 120)
                         }
                     }
                     .padding()
                 }
+                .frame(maxWidth: .infinity)
+                .background(Color(UIColor.systemBackground))
 
-                Divider().padding(.vertical)
+                Divider()
 
-                ScrollView(.horizontal) {
-                    HStack(spacing: 10) {
-                        ForEach(guests) { guest in
+                // --- Гости без мест ---
+                ScrollView(.horizontal, showsIndicators: false) {
+                    LazyHGrid(rows: guestRows, spacing: 10) {
+                        ForEach(unseatedGuests) { guest in
                             Text(guest.name)
-                                .padding(8)
+                                .font(.system(size: 16))
+                                .padding(.horizontal, 12)
+                                .padding(.vertical, 6)
+                                .frame(height: 40)
                                 .background(Color.blue.opacity(0.2))
                                 .cornerRadius(8)
                                 .onDrag {
-                                    print("⬆️ Start dragging: \(guest.name) — \(guest.uuid)")
-                                    return NSItemProvider(object: guest.uuid.uuidString as NSString)
+                                    NSItemProvider(object: guest.uuid.uuidString as NSString)
                                 }
                         }
                     }
-                    .padding()
+                    .padding(.horizontal)
+                    .padding(.top, 20)
                 }
+                // Приём дропа от гостей из столов
+                .onDrop(of: [.text], isTargeted: nil) { providers in
+                    guard let provider = providers.first else { return false }
+                    provider.loadObject(ofClass: NSString.self) { item, _ in
+                        guard
+                            let uuidString = item as? String,
+                            let id = UUID(uuidString: uuidString),
+                            let guest = guests.first(where: { $0.uuid == id })
+                        else { return }
+                        DispatchQueue.main.async { handleReturn(guest) }
+                    }
+                    return true
+                }
+                .frame(height: 90)
+                .background(Color(UIColor.systemBackground))
             }
             .navigationTitle("Рассадка")
             .toolbar {
@@ -59,17 +95,31 @@ struct SeatingDragView: View {
         }
     }
 
-    private func handleDrop(_ guest: Guest, to index: Int) {
-        print("📌 handleDrop called with guest: \(guest.name), table: \(tables[index].name)")
+    // MARK: - Логика перемещения
 
-        if tables[index].guests.contains(where: { $0.uuid == guest.uuid }) {
-            print("⚠️ Guest already at this table")
-            return
+    private func handleDrop(_ guest: Guest, to table: SeatingTable) {
+        // убрать гостя из всех столов
+        for i in tables.indices {
+            tables[i].guests.removeAll { $0.uuid == guest.uuid }
         }
+        // добавить в целевой
+        if let idx = tables.firstIndex(where: { $0.uuid == table.uuid }) {
+            tables[idx].guests.append(guest)
+        }
+    }
 
-        var table = tables[index]
-        table.guests.append(guest)
-        tables[index] = table 
-        print("✅ Guest added to table \(tables[index].name)")
+    private func handleReturn(_ guest: Guest) {
+        // убрать гостя из всех столов (вернётся в низ автоматически)
+        for i in tables.indices {
+            tables[i].guests.removeAll { $0.uuid == guest.uuid }
+        }
+    }
+
+    // MARK: - Вычисляемые данные
+
+    /// Гости, которые ещё не посажены за столы
+    private var unseatedGuests: [Guest] {
+        let occupiedIDs = Set(tables.flatMap { $0.guests.map(\.uuid) })
+        return guests.filter { !occupiedIDs.contains($0.uuid) }
     }
 }

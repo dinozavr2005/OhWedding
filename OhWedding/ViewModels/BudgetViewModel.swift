@@ -1,6 +1,6 @@
 import SwiftUI
 
-class BudgetViewModel: ObservableObject {
+ final class BudgetViewModel: ObservableObject {
     @Published var expenses: [Expense] = []
     @Published var selectedCategory: ExpenseCategory?
     

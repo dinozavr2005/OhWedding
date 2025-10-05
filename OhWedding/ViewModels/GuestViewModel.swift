@@ -2,7 +2,7 @@ import Foundation
 import SwiftData
 
 @MainActor
-class GuestViewModel: ObservableObject {
+final class GuestViewModel: ObservableObject {
     @Published var guests: [Guest] = []
     @Published var searchText: String = ""
     @Published var tables: [SeatingTable] = []
@@ -69,6 +69,7 @@ class GuestViewModel: ObservableObject {
         do {
             try context.save()
             guests.removeAll { $0.id == guest.id }
+            loadTables(using: context)
         } catch {
             print("❌ Ошибка при удалении гостя: \(error)")
         }
@@ -104,42 +105,106 @@ class GuestViewModel: ObservableObject {
 
     // MARK: - Tables
 
+    func loadTables(using context: ModelContext) {
+        do {
+            tables = try context.fetch(
+                FetchDescriptor<SeatingTable>(sortBy: [SortDescriptor(\.name)])
+            )
+        } catch { print("❌ Load tables:", error) }
+    }
+
+    func addTable(using context: ModelContext,
+                  name: String,
+                  capacity: Int,
+                  shape: TableShape,
+                  guests: [Guest]) {
+        // простая валидация по вместимости
+        let occupied = guests.reduce(0) { $0 + ($1.plusOne ? 2 : 1) }
+        guard occupied <= capacity else {
+            print("⚠️ Слишком мало мест: \(occupied) > \(capacity)")
+            return
+        }
+
+        let table = SeatingTable(name: name, capacity: capacity, shape: shape)
+        context.insert(table)
+
+        // связь в обе стороны (инверс обновится и так, но делаем явно)
+        guests.forEach { $0.seatingTable = table }
+        table.guests = guests
+
+        do {
+            try context.save()
+            loadTables(using: context)
+            loadGuests(using: context) // чтобы обновился статус у гостей
+        } catch { print("❌ Add table:", error) }
+    }
+
+    func updateTable(using context: ModelContext,
+                     table: SeatingTable,
+                     name: String? = nil,
+                     capacity: Int? = nil,
+                     shape: TableShape? = nil,
+                     newGuests: [Guest]? = nil) {
+        if let name { table.name = name }
+        if let shape { table.shape = shape }
+
+        // если меняем capacity без смены состава — тоже валидируем
+        if let newCap = capacity {
+            let occupiedNow = table.guests.reduce(0) { $0 + ($1.plusOne ? 2 : 1) }
+            guard occupiedNow <= newCap else {
+                print("⚠️ Слишком мало мест: \(occupiedNow) > \(newCap)")
+                return
+            }
+            table.capacity = newCap
+        }
+
+        if let newGuests {
+            let occupied = newGuests.reduce(0) { $0 + ($1.plusOne ? 2 : 1) }
+            guard occupied <= table.capacity else {
+                print("⚠️ Слишком мало мест: \(occupied) > \(table.capacity)")
+                return
+            }
+
+            let oldSet = Set(table.guests.map(\.uuid))
+            let newSet = Set(newGuests.map(\.uuid))
+
+            // снятые
+            table.guests.filter { !newSet.contains($0.uuid) }
+                .forEach { $0.seatingTable = nil }
+
+            // новые
+            newGuests.filter { !oldSet.contains($0.uuid) }
+                .forEach { $0.seatingTable = table }
+
+            table.guests = newGuests
+        }
+
+        do {
+            try context.save()
+            loadTables(using: context)
+            loadGuests(using: context)
+        } catch { print("❌ Update table:", error) }
+    }
+
+    func deleteTable(using context: ModelContext, table: SeatingTable) {
+        // .nullify на связи сам обнулит guest.seatingTable
+        context.delete(table)
+        do {
+            try context.save()
+            loadTables(using: context)
+            loadGuests(using: context)
+        } catch { print("❌ Delete table:", error) }
+    }
+
     var totalTables: Int { tables.count }
 
-    var unassignedGuestsCount: Int {
-        let assignedIDs = Set(tables.flatMap { $0.guests.map(\.id) })
-        return guests.filter { !assignedIDs.contains($0.id) }.count
-    }
-
-    var unassignedGuests: [Guest] {
-        let assignedIDs = Set(tables.flatMap { $0.guests.map(\.id) })
-        return guests.filter { !assignedIDs.contains($0.id) }
-    }
+    var unassignedGuestsCount: Int { guests.filter { $0.seatingTable == nil }.count }
+    var unassignedGuests: [Guest] { guests.filter { $0.seatingTable == nil } }
 
     func availableGuests(for table: SeatingTable?) -> [Guest] {
-        let otherAssigned = tables
-            .filter { $0.id != table?.id }
-            .flatMap { $0.guests }
-
-        let assignedSet = Set(otherAssigned.map(\.id))
-        return guests.filter { !assignedSet.contains($0.id) }
-    }
-
-    func addTable(_ table: SeatingTable) {
-        tables.append(table)
-    }
-
-    func updateAllTables(_ newTables: [SeatingTable]) {
-        tables = newTables
-    }
-
-    func updateTable(_ table: SeatingTable) {
-        if let idx = tables.firstIndex(where: { $0.id == table.id }) {
-            tables[idx] = table
+        guests.filter { g in
+            // Доступны все без стола + уже сидящие за текущим столом
+            g.seatingTable == nil || g.seatingTable?.uuid == table?.uuid
         }
-    }
-
-    func deleteTable(_ table: SeatingTable) {
-        tables.removeAll { $0.id == table.id }
     }
 }

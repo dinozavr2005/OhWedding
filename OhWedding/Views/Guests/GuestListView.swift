@@ -44,6 +44,7 @@ struct GuestListView: View {
         .navigationTitle("Гости")
         .onAppear {
             viewModel.loadGuests(using: modelContext)
+            viewModel.loadTables(using: modelContext)
         }
         .toolbar {
             ToolbarItemGroup(placement: .navigationBarTrailing) {
@@ -87,21 +88,30 @@ struct GuestListView: View {
             }
         }
         .sheet(isPresented: $showingAddTable) {
-            AddTableView(availableGuests: viewModel.unassignedGuests) {
-                viewModel.addTable($0)
+            AddTableView(availableGuests: viewModel.unassignedGuests) { name, capacity, shape, selected in
+                viewModel.addTable(using: modelContext,
+                                   name: name,
+                                   capacity: capacity,
+                                   shape: shape,
+                                   guests: selected)
             }
         }
         .sheet(item: $selectedTable) { table in
             EditTableView(
                 table: table,
                 availableGuests: viewModel.availableGuests(for: table)
-            ) {
-                viewModel.updateTable($0)
+            ) { name, capacity, shape, newGuests in
+                viewModel.updateTable(using: modelContext,
+                                      table: table,
+                                      name: name,
+                                      capacity: capacity,
+                                      shape: shape,
+                                      newGuests: newGuests)
             }
         }
         .sheet(isPresented: $showingSeatingDragView) {
             SeatingDragView(
-                guests: viewModel.unassignedGuests,
+                guests: viewModel.guests,
                 tables: $viewModel.tables,
                 onUpdate: { }
             )
@@ -127,11 +137,18 @@ struct GuestListView: View {
 
                 Section {
                     ForEach(viewModel.filteredGuests) { guest in
-                        GuestRow(guest: guest)
-                            .contentShape(Rectangle())
-                            .onTapGesture {
-                                selectedGuest = guest
+                        GuestRow(
+                            guest: guest,
+                            onStatusTap: {
+                                viewModel.updateGuest(using: modelContext, guest: guest) {
+                                    $0.status = $0.status.next()
+                                }
                             }
+                        )
+                        .contentShape(Rectangle())
+                        .onTapGesture {
+                            selectedGuest = guest
+                        }
                     }
                     .onDelete { offsets in
                         offsets
@@ -176,9 +193,8 @@ struct GuestListView: View {
                     }
                 }
                 .onDelete { offsets in
-                    offsets
-                        .map { viewModel.tables[$0] }
-                        .forEach(viewModel.deleteTable)
+                    offsets.map { viewModel.tables[$0] }
+                           .forEach { viewModel.deleteTable(using: modelContext, table: $0) }
                 }
             }
         }

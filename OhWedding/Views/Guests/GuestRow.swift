@@ -9,12 +9,19 @@ import SwiftUI
 
 struct GuestRow: View {
     let guest: Guest
+    var onStatusTap: (() -> Void)? = nil
 
     var body: some View {
         HStack {
-            VStack(alignment: .leading) {
-                Text(guest.name)
-                    .font(.headline)
+            VStack(alignment: .leading, spacing: 4) {
+                HStack(spacing: 6) {
+                    Text(guest.name)
+                        .font(.headline)
+
+                    if guest.plusOne {
+                        PlusOneBadge()
+                    }
+                }
 
                 HStack {
                     Image(systemName: "phone")
@@ -27,7 +34,7 @@ struct GuestRow: View {
 
             Spacer()
 
-            StatusBadge(status: guest.status)
+            StatusBadge(status: guest.status, onTap: onStatusTap)
         }
         .padding(.vertical, 4)
     }

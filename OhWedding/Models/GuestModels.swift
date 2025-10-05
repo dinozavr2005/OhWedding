@@ -13,7 +13,7 @@ import SwiftData
     var plusOne: Bool
     var dietaryRestrictions: String
     var notes: String
-
+    var seatingTable: SeatingTable?
     init(
         name: String,
         group: String,
@@ -47,4 +47,14 @@ enum GuestStatus: String, CaseIterable, Codable {
         case .declined: return .red
         }
     }
-} 
+}
+
+extension GuestStatus {
+    func next() -> GuestStatus {
+        switch self {
+        case .invited: return .confirmed
+        case .confirmed: return .declined
+        case .declined: return .invited
+        }
+    }
+}

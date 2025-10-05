@@ -9,6 +9,7 @@ import SwiftUI
 
 struct StatusBadge: View {
     let status: GuestStatus
+    var onTap: (() -> Void)? = nil
 
     var body: some View {
         Text(status.rawValue)
@@ -18,5 +19,8 @@ struct StatusBadge: View {
             .background(status.color.opacity(0.2))
             .foregroundColor(status.color)
             .cornerRadius(8)
+            .onTapGesture {
+                onTap?()
+            }
     }
 }

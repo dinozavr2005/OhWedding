@@ -11,28 +11,45 @@ struct EditTableView: View {
     @Environment(\.dismiss) var dismiss
 
     let availableGuests: [Guest]
-    let onSave: (SeatingTable) -> Void
+    /// onSave должен дергать VM:
+    /// viewModel.updateTable(using: context, table:originalTable, name:capacity:shape:newGuests:)
+    let onSave: (_ name: String, _ capacity: Int, _ shape: TableShape, _ guests: [Guest]) -> Void
 
-    @State private var table: SeatingTable
-    @State private var selectedGuests: Set<Guest>
+    @State private var name: String
+    @State private var capacity: Int
+    @State private var shape: TableShape
+    @State private var selectedGuestIDs: Set<UUID>
 
-    init(table: SeatingTable,
-         availableGuests: [Guest],
-         onSave: @escaping (SeatingTable) -> Void)
-    {
+    init(
+        table: SeatingTable,
+        availableGuests: [Guest],
+        onSave: @escaping (_ name: String, _ capacity: Int, _ shape: TableShape, _ guests: [Guest]) -> Void
+    ) {
         self.availableGuests = availableGuests
         self.onSave = onSave
-        _table = State(initialValue: table)
-        _selectedGuests = State(initialValue: Set(table.guests))
+        _name = State(initialValue: table.name)
+        _capacity = State(initialValue: table.capacity)
+        _shape = State(initialValue: table.shape)
+        _selectedGuestIDs = State(initialValue: Set(table.guests.map(\.uuid)))
+    }
+
+    private var occupied: Int {
+        availableGuests
+            .filter { selectedGuestIDs.contains($0.uuid) }
+            .reduce(0) { $0 + ($1.plusOne ? 2 : 1) }
     }
 
     var body: some View {
         NavigationView {
             Form {
-                Section(header: Text("Информация о столе")) {
-                    TextField("Название стола", text: $table.name)
-                    Stepper("Вместимость: \(table.capacity)", value: $table.capacity, in: 1...20)
-                    Picker("Форма", selection: $table.shape) {
+                Section(
+                    header: Text("Информация о столе"),
+                    footer: Text("Занято \(occupied) из \(capacity)")
+                        .foregroundColor(occupied > capacity ? .red : .secondary)
+                ) {
+                    TextField("Название стола", text: $name)
+                    Stepper("Вместимость: \(capacity)", value: $capacity, in: 1...20)
+                    Picker("Форма", selection: $shape) {
                         ForEach(TableShape.allCases) { shape in
                             Text(shape.rawValue).tag(shape)
                         }
@@ -43,12 +60,12 @@ struct EditTableView: View {
                     ForEach(availableGuests) { guest in
                         MultipleSelectionRow(
                             title: guest.name,
-                            isSelected: selectedGuests.contains(guest)
+                            isSelected: selectedGuestIDs.contains(guest.uuid)
                         ) {
-                            if selectedGuests.contains(guest) {
-                                selectedGuests.remove(guest)
+                            if selectedGuestIDs.contains(guest.uuid) {
+                                selectedGuestIDs.remove(guest.uuid)
                             } else {
-                                selectedGuests.insert(guest)
+                                selectedGuestIDs.insert(guest.uuid)
                             }
                         }
                     }
@@ -61,15 +78,13 @@ struct EditTableView: View {
                 }
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Сохранить") {
-                        var updated = table
-                        updated.guests = Array(selectedGuests)
-                        onSave(updated)
+                        let selected = availableGuests.filter { selectedGuestIDs.contains($0.uuid) }
+                        onSave(name, capacity, shape, selected)
                         dismiss()
                     }
-                    .disabled(table.name.isEmpty)
+                    .disabled(name.isEmpty || occupied > capacity)
                 }
             }
         }
     }
 }
-

@@ -7,9 +7,9 @@
 
 import SwiftUI
 
-struct MultipleSelectionRow: View {
-    @State private var selectedGuests = Set<Guest>()
+// MARK: - Row
 
+struct MultipleSelectionRow: View {
     let title: String
     let isSelected: Bool
     let action: () -> Void
@@ -27,18 +27,20 @@ struct MultipleSelectionRow: View {
     }
 }
 
-// MARK: — Форма добавления стола
+// MARK: - Форма добавления стола (под новые методы VM)
 
 struct AddTableView: View {
     @Environment(\.dismiss) var dismiss
 
     let availableGuests: [Guest]
-    let onAdd: (SeatingTable) -> Void
+    /// onAdd вызывает VM:
+    /// viewModel.addTable(using: context, name:capacity:shape:guests:)
+    let onAdd: (_ name: String, _ capacity: Int, _ shape: TableShape, _ guests: [Guest]) -> Void
 
     @State private var name: String = ""
     @State private var capacity: Int = 4
     @State private var shape: TableShape = .round
-    @State private var selectedGuests = Set<Guest>()
+    @State private var selectedGuestIDs = Set<UUID>()
 
     var body: some View {
         NavigationView {
@@ -57,12 +59,12 @@ struct AddTableView: View {
                     ForEach(availableGuests) { guest in
                         MultipleSelectionRow(
                             title: guest.name,
-                            isSelected: selectedGuests.contains(guest)
+                            isSelected: selectedGuestIDs.contains(guest.uuid)
                         ) {
-                            if selectedGuests.contains(guest) {
-                                selectedGuests.remove(guest)
+                            if selectedGuestIDs.contains(guest.uuid) {
+                                selectedGuestIDs.remove(guest.uuid)
                             } else {
-                                selectedGuests.insert(guest)
+                                selectedGuestIDs.insert(guest.uuid)
                             }
                         }
                     }
@@ -75,13 +77,8 @@ struct AddTableView: View {
                 }
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Добавить") {
-                        let table = SeatingTable(
-                            name: name,
-                            guests: Array(selectedGuests),
-                            capacity: capacity,
-                            shape: shape
-                        )
-                        onAdd(table)
+                        let selected = availableGuests.filter { selectedGuestIDs.contains($0.uuid) }
+                        onAdd(name, capacity, shape, selected)
                         dismiss()
                     }
                     .disabled(name.isEmpty)
@@ -90,3 +87,4 @@ struct AddTableView: View {
         }
     }
 }
+
