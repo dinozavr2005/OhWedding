@@ -3,7 +3,7 @@ import SwiftUI
 import SwiftData
 
 @Model
-    class Guest {
+final class Guest {
     @Attribute(.unique)
     var uuid: UUID = UUID()
     var name: String

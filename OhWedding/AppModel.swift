@@ -12,9 +12,20 @@ import SwiftData
 final class AppModel: ObservableObject {
     static let shared: AppModel = {
         do {
-            let url = URL.documentsDirectory.appending(path: "Guests.sqlite")
-            let configuration = ModelConfiguration("GuestModel", url: url)
-            let container = try ModelContainer(for: Guest.self, configurations: configuration)
+            // Путь к файлу базы
+            let url = URL.documentsDirectory.appending(path: "Wedding.sqlite")
+
+            // Конфигурация без имени (одна база для всех моделей)
+            let configuration = ModelConfiguration(url: url)
+
+            // Контейнер с перечислением всех моделей
+            let container = try ModelContainer(
+                for: Guest.self,
+                    SeatingTable.self,
+                    Assignment.self,
+                configurations: configuration
+            )
+
             return AppModel(container: container)
         } catch {
             fatalError("❌ Не удалось инициализировать ModelContainer: \(error)")
@@ -28,3 +39,4 @@ final class AppModel: ObservableObject {
         self.modelContainer = container
     }
 }
+

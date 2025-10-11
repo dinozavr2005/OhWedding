@@ -5,16 +5,71 @@
 //  Created by Buikliskii Vladimir on 26.04.2025.
 //
 
+import SwiftData
 import SwiftUI
 
+@MainActor
 class TaskViewModel: ObservableObject {
     @Published var tasks: [WeddingTask] = []
     @Published var assignments: [Assignment] = []
     @Published var selectedCategory: TaskCategory?
 
+    private var context: ModelContext?
+
+    // MARK: - Init
     init() {
         self.tasks = WeddingChecklistData.allTasks
-        self.assignments = AssignmentData.assignments
+    }
+
+    func updateContext(_ context: ModelContext) {
+        self.context = context
+        loadAssignments()
+    }
+
+    // MARK: - SwiftData loading
+    func loadAssignments() {
+        guard let context else {
+            self.assignments = []
+            return
+        }
+
+        let descriptor = FetchDescriptor<Assignment>(
+            sortBy: [SortDescriptor(\.order, order: .forward)]
+        )
+        self.assignments = (try? context.fetch(descriptor)) ?? []
+    }
+
+    // MARK: - Toggle completion
+    func toggleAssigmentCompletion(_ assignment: Assignment) {
+        guard let context else {
+            self.assignments = []
+            return
+        }
+        assignment.isCompleted.toggle()
+        try? context.save()
+        loadAssignments()
+    }
+
+    // MARK: - Add / Delete
+    func addAssignment(title: String, detail: String) {
+        guard let context else {
+            self.assignments = []
+            return
+        }
+        let newAssignment = Assignment(title: title, detail: detail)
+        context.insert(newAssignment)
+        try? context.save()
+        loadAssignments()
+    }
+
+    func deleteAssignment(_ assignment: Assignment) {
+        guard let context else {
+            self.assignments = []
+            return
+        }
+        context.delete(assignment)
+        try? context.save()
+        loadAssignments()
     }
 
     // Возвращает все задачи для выбранной категории (если указана)
@@ -61,13 +116,6 @@ class TaskViewModel: ObservableObject {
         assignments.count
     }
 
-    func toggleAssigmentCompletion(at index: Int) {
-        if let assignment = assignments.first(where: { $0.id == assignments[index].id }) {
-            if let assignmentIndex = assignments.firstIndex(where: { $0.id == assignment.id }) {
-                assignments[assignmentIndex].isCompleted.toggle()  // Переключаем статус выполнения
-            }
-        }
-    }
     // Чек-лист для свадьбы
     var weddingChecklistCompleted: Int {
         tasks.filter { $0.category == .weddingChecklist && $0.isCompleted }.count

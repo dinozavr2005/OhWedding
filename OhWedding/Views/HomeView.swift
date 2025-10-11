@@ -8,21 +8,43 @@
 import SwiftUI
 
 struct HomeView: View {
-    @StateObject private var viewModel = HomeViewModel()
+    @Environment(\.modelContext) private var modelContext
+
+    @StateObject private var homeVM = HomeViewModel()
+    @StateObject private var guestVM = GuestViewModel()
+    @StateObject private var taskVM = TaskViewModel()
     @StateObject private var progressViewModel = ProgressViewModel()
+
     @State private var showingSettings = false
     
     var body: some View {
         NavigationView {
             ScrollView {
                 VStack(spacing: 24) {
-                    CountdownView(viewModel: viewModel)
+                    CountdownView(viewModel: homeVM)
                     QuickActionsGridView()
                     ProgressOverviewView(viewModel: progressViewModel)
                 }
                 .padding()
             }
-            .navigationTitle(viewModel.weddingTitle)
+            .navigationTitle(homeVM.weddingTitle)
+            .task {
+                // загружаем данные
+                guestVM.loadGuests(using: modelContext)
+                guestVM.loadTables(using: modelContext)
+                taskVM.updateContext(modelContext)
+
+                // передаём в ProgressVM
+                progressViewModel.updateGuestProgress(
+                    confirmed: guestVM.confirmedGuestsWithPlusOne,
+                    total: guestVM.totalGuestsWithPlusOne
+                )
+
+                progressViewModel.updateTaskProgress(
+                    completed: taskVM.completedTasks,
+                    total: taskVM.totalTasks
+                )
+            }
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button(action: {
@@ -33,7 +55,7 @@ struct HomeView: View {
                 }
             }
             .sheet(isPresented: $showingSettings) {
-                WeddingSettingsView(viewModel: viewModel)
+                WeddingSettingsView(viewModel: homeVM)
             }
         }
     }

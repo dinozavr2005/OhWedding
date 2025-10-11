@@ -6,38 +6,44 @@
 //
 
 import SwiftUI
+import SwiftData
 
 struct AssignmentCell: View {
-    @Binding var assignment: Assignment  // Привязка для изменения состояния задания
+    @Bindable var assignment: Assignment  // @Binding → @Bindable
 
     var body: some View {
-        HStack {
-            // Чекбокс (Toggle)
+        HStack(alignment: .top, spacing: 12) {
             Toggle(isOn: $assignment.isCompleted) {
-                VStack(alignment: .leading) {
+                VStack(alignment: .leading, spacing: 4) {
                     Text(assignment.title)
                         .font(.headline)
-                        .strikethrough(assignment.isCompleted)  // За черкивание текста, если задание выполнено
+                        .foregroundColor(assignment.isCompleted ? .gray : .primary)
+                        .strikethrough(assignment.isCompleted, color: .gray)
 
-                    Text(assignment.description)
+                    Text(assignment.detail)
                         .font(.subheadline)
                         .foregroundColor(.gray)
                 }
             }
-            .toggleStyle(CheckboxToggleStyle())  // Стиль для чекбокса
-            .padding()
+            .toggleStyle(CheckboxToggleStyle())
         }
-        .background(Color.white)  // Фон ячейки
+        .padding()
+        .background(Color.white)
         .cornerRadius(10)
-        .shadow(radius: 3)
+        .shadow(color: .black.opacity(0.1), radius: 3, x: 0, y: 2)
     }
 }
 
-struct AssignmentCell_Previews: PreviewProvider {
-    static var previews: some View {
-        AssignmentCell(assignment: .constant(Assignment(title: "Скачать Pinterest", description: "Сохранять в муд борд всё, что привлекает внимание.", isCompleted: false)))
-            .padding()
-            .background(Color.gray.opacity(0.1))
-    }
+#Preview {
+    // Превью без SwiftData-контекста
+    AssignmentCell(
+        assignment: Assignment(
+            title: "Скачать Pinterest",
+            detail: "Сохранять в муд борд всё, что привлекает внимание.",
+            isCompleted: false
+        )
+    )
+    .padding()
+    .background(Color.gray.opacity(0.1))
 }
 

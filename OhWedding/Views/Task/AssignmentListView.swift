@@ -6,23 +6,20 @@
 //
 
 import SwiftUI
+import SwiftData
 
 struct AssignmentListView: View {
-    @EnvironmentObject var viewModel: TaskViewModel  // Используем EnvironmentObject для доступа к вью модели
+    @EnvironmentObject var viewModel: TaskViewModel
 
     var body: some View {
         ScrollView {
             VStack(spacing: 16) {
-                ForEach(viewModel.assignments.indices, id: \.self) { index in
-                    // Используем AssignmentCell для каждого задания
-                    AssignmentCell(assignment: $viewModel.assignments[index])  // Передаем Binding к каждому заданию
-                        .onTapGesture {
-                            // При нажатии меняем статус задания через вью модель
-                            viewModel.toggleAssigmentCompletion(at: index)
-                        }
+                ForEach(viewModel.assignments) { assignment in
+                    AssignmentCell(assignment: assignment)
+                        .padding(.horizontal)
                 }
             }
-            .padding()
+            .padding(.vertical)
         }
         .navigationTitle("Задания для невесты")
     }
@@ -31,6 +28,6 @@ struct AssignmentListView: View {
 #Preview {
     NavigationView {
         AssignmentListView()
-            .environmentObject(TaskViewModel())  // Передаем вью модель через environment
+            .environmentObject(TaskViewModel())
     }
 }
