@@ -16,13 +16,23 @@ struct MainTabView: View {
         TabView(selection: $selectedTab) {
             HomeView()
                 .tabItem {
-                    Label("Главная", systemImage: "house.fill")
+                    Label {
+                        Text("Главная")
+                    } icon: {
+                        Image("houseIcon")
+                            .renderingMode(.template)
+                    }
                 }
                 .tag(0)
 
             TasksTabView()
                 .tabItem {
-                    Label("Задачи", systemImage: "list.bullet.clipboard")
+                    Label {
+                        Text("Задачи")
+                    } icon: {
+                        Image("checklistIcon")
+                            .renderingMode(.template)
+                    }
                 }
                 .tag(1)
 
@@ -34,13 +44,16 @@ struct MainTabView: View {
 
             BudgetTabView()
                 .tabItem {
-                    Label("Бюджет", systemImage: "dollarsign.circle.fill")
+                    Label {
+                        Text("Бюджет")
+                    } icon: {
+                        Image("banknote")
+                            .renderingMode(.template)
+                    }
                 }
                 .tag(3)
         }
-        .onAppear {
-            DataSeeder.seedAssignmentsIfNeeded(context: context)
-        }
+        .tint(Color(hex: "6C5CE7"))
     }
 }
 

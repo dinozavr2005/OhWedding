@@ -10,9 +10,22 @@
 		E7E0F1542DAA96E500184619 /* OhWedding.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = OhWedding.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		E7E912552E9E847900EB62CC /* Exceptions for "OhWedding" folder in "OhWedding" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = E7E0F1532DAA96E500184619 /* OhWedding */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		E7E0F1562DAA96E500184619 /* OhWedding */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				E7E912552E9E847900EB62CC /* Exceptions for "OhWedding" folder in "OhWedding" target */,
+			);
 			path = OhWedding;
 			sourceTree = "<group>";
 		};
@@ -255,6 +268,7 @@
 				DEVELOPMENT_TEAM = 27YP7QKF76;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = OhWedding/Info.plist;
 				INFOPLIST_KEY_NSCameraUsageDescription = "Мы используем камеру для распознавания списка гостей";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -286,6 +300,7 @@
 				DEVELOPMENT_TEAM = 27YP7QKF76;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = OhWedding/Info.plist;
 				INFOPLIST_KEY_NSCameraUsageDescription = "Мы используем камеру для распознавания списка гостей";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;

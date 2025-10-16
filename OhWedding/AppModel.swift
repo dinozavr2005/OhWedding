@@ -12,31 +12,34 @@ import SwiftData
 final class AppModel: ObservableObject {
     static let shared: AppModel = {
         do {
-            // Путь к файлу базы
+            // Путь к базе
             let url = URL.documentsDirectory.appending(path: "Wedding.sqlite")
-
-            // Конфигурация без имени (одна база для всех моделей)
+            
+            // Конфигурация базы
             let configuration = ModelConfiguration(url: url)
-
-            // Контейнер с перечислением всех моделей
+            
+            // Контейнер со всеми моделями
             let container = try ModelContainer(
                 for: Guest.self,
-                    SeatingTable.self,
-                    Assignment.self,
+                SeatingTable.self,
+                Assignment.self,
+                WeddingTask.self,
                 configurations: configuration
             )
-
-            return AppModel(container: container)
+            
+            let appModel = AppModel(container: container)
+            DataSeeder.seedAllIfNeeded(context: appModel.modelContext)
+            
+            return appModel
         } catch {
             fatalError("❌ Не удалось инициализировать ModelContainer: \(error)")
         }
     }()
-
+    
     let modelContainer: ModelContainer
     var modelContext: ModelContext { modelContainer.mainContext }
-
+    
     private init(container: ModelContainer) {
         self.modelContainer = container
     }
 }
-

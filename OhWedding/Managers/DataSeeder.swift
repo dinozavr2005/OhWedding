@@ -23,15 +23,46 @@ struct DataSeeder {
                     detail: assignment.detail,
                     isCompleted: assignment.isCompleted,
                     dueDate: assignment.dueDate,
-                    order: index   // 👈 сохраняем индекс
+                    order: index
                 )
                 context.insert(copy)
             }
 
             try context.save()
-            print("✅ Seeded \(AssignmentData.assignments.count) assignments with order")
+            print("✅ Seeded \(AssignmentData.assignments.count) assignments")
         } catch {
             print("❌ Failed to seed assignments:", error)
         }
+    }
+
+    static func seedWeddingTasksIfNeeded(context: ModelContext) {
+        do {
+            let count = try context.fetchCount(FetchDescriptor<WeddingTask>())
+            guard count == 0 else {
+                print("ℹ️ Wedding tasks already exist: \(count)")
+                return
+            }
+
+            for task in WeddingChecklistData.allTasks {
+                let copy = WeddingTask(
+                    title: task.title,
+                    isCompleted: task.isCompleted,
+                    dueDate: task.dueDate,
+                    category: task.category
+                )
+                context.insert(copy)
+            }
+
+            try context.save()
+            print("✅ Seeded \(WeddingChecklistData.allTasks.count) wedding tasks")
+        } catch {
+            print("❌ Failed to seed wedding tasks:", error)
+        }
+    }
+
+    /// 👇 Вызываем все сразу
+    static func seedAllIfNeeded(context: ModelContext) {
+        seedAssignmentsIfNeeded(context: context)
+        seedWeddingTasksIfNeeded(context: context)
     }
 }

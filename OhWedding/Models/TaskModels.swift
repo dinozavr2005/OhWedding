@@ -1,14 +1,24 @@
 import Foundation
+import SwiftData
 
-struct WeddingTask: Identifiable {
-    let id = UUID()
+@Model
+final class WeddingTask {
+    @Attribute(.unique) var id: UUID
     var title: String
     var isCompleted: Bool
     var dueDate: Date?
     var category: TaskCategory
+
+    init(id: UUID = UUID(), title: String, isCompleted: Bool, dueDate: Date?, category: TaskCategory) {
+        self.id = id
+        self.title = title
+        self.isCompleted = isCompleted
+        self.dueDate = dueDate
+        self.category = category
+    }
 }
 
-enum TaskCategory: String, CaseIterable {
+enum TaskCategory: String, Codable, CaseIterable {
     case general        = "Общее"
     case venue          = "Место"
     case vendors        = "Подрядчики"

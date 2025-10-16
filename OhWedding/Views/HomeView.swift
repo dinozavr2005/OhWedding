@@ -16,17 +16,19 @@ struct HomeView: View {
     @StateObject private var progressViewModel = ProgressViewModel()
 
     @State private var showingSettings = false
-    
+
     var body: some View {
         NavigationView {
             ScrollView {
                 VStack(spacing: 24) {
-                    CountdownView(viewModel: homeVM)
+                    CountdownCard(days: homeVM.daysUntilWedding)
                     QuickActionsGridView()
                     ProgressOverviewView(viewModel: progressViewModel)
                 }
-                .padding()
+                .padding(.horizontal, 30)
+                .padding(.top, 16)
             }
+            .appBackground()
             .navigationTitle(homeVM.weddingTitle)
             .task {
                 // загружаем данные
@@ -50,7 +52,8 @@ struct HomeView: View {
                     Button(action: {
                         showingSettings = true
                     }) {
-                        Image(systemName: "gear")
+                        Image(systemName: "gearshape")
+                            .foregroundColor(.black)
                     }
                 }
             }
@@ -61,69 +64,47 @@ struct HomeView: View {
     }
 }
 
-// MARK: - Home Components
-struct CountdownView: View {
-    @ObservedObject var viewModel: HomeViewModel
-    
-    var body: some View {
-        VStack(spacing: 8) {
-            Text("До свадьбы осталось")
-                .font(.title3)
-            Text("\(viewModel.daysUntilWedding)")
-                .font(.system(size: 72, weight: .bold))
-                .foregroundColor(.pink)
-            Text("дней")
-                .font(.title3)
-        }
-        .frame(maxWidth: .infinity)
-        .padding()
-        .background(
-            RoundedRectangle(cornerRadius: 20)
-                .fill(Color.white)
-                .shadow(radius: 5)
-        )
-    }
-}
-
 struct QuickActionsGridView: View {
     var body: some View {
-        LazyVGrid(columns: [
-            GridItem(.flexible()),
-            GridItem(.flexible())
-        ], spacing: 16) {
+        LazyVGrid(
+            columns: [
+                GridItem(.flexible(), spacing: 20),
+                GridItem(.flexible(), spacing: 20)
+            ],
+            spacing: 20
+        ) {
             NavigationLink(destination: TaskListView()) {
                 QuickActionCard(
                     title: "Список задач",
-                    icon: "list.bullet.clipboard",
-                    color: .blue
+                    image: Image("List"), // ассет
+                    color: Color(hex: "4ECDC4")
                 )
             }
-            
+
             NavigationLink(destination: GuestListView()) {
                 QuickActionCard(
                     title: "Гости",
-                    icon: "person.2.fill",
-                    color: .green
+                    image: Image(systemName: "person.2.fill"), // SF Symbol
+                    color: Color(hex: "6C5CE7")
                 )
             }
-            
+
             NavigationLink(destination: BudgetView()) {
                 QuickActionCard(
                     title: "Бюджет",
-                    icon: "dollarsign.circle.fill",
-                    color: .purple
+                    image: Image("budgetIcon"),
+                    color: Color(hex: "F0AAFF")
                 )
             }
-            
-            NavigationLink(destination: Text("Вдохновение")) {
+
+            NavigationLink(destination: Text("Тайминг")) {
                 QuickActionCard(
-                    title: "Вдохновение",
-                    icon: "heart.fill",
-                    color: .pink
+                    title: "Тайминг",
+                    image: Image(systemName: "clock"),
+                    color: Color(hex: "E792FC")
                 )
             }
         }
-        .padding(.horizontal)
     }
 }
 
@@ -133,8 +114,8 @@ struct ProgressOverviewView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
             Text("Прогресс подготовки")
-                .font(.headline)
-            
+                .font(.manropeSemiBold(size: 18))
+
             ProgressBar(value: viewModel.progressPercentage)
             
             HStack {
@@ -156,72 +137,55 @@ struct ProgressOverviewView: View {
         }
         .padding()
         .background(
-            RoundedRectangle(cornerRadius: 20)
+            RoundedRectangle(cornerRadius: 20, style: .continuous)
                 .fill(Color.white)
-                .shadow(radius: 5)
-        )
-    }
-}
-
-// MARK: - Reusable Components
-struct QuickActionCard: View {
-    let title: String
-    let icon: String
-    let color: Color
-    
-    var body: some View {
-        VStack {
-            Image(systemName: icon)
-                .font(.system(size: 30))
-                .foregroundColor(color)
-                .frame(width: 60, height: 60)
-                .background(
-                    Circle()
-                        .fill(color.opacity(0.2))
+                .overlay(
+                    RoundedRectangle(cornerRadius: 20, style: .continuous)
+                        .stroke(Color.gray.opacity(0.15), lineWidth: 1)
                 )
-            
-            Text(title)
-                .font(.system(size: 16, weight: .medium))
-                .foregroundColor(.primary)
-                .multilineTextAlignment(.center)
-        }
-        .frame(maxWidth: .infinity)
-        .padding()
-        .background(
-            RoundedRectangle(cornerRadius: 15)
-                .fill(Color.white)
-                .shadow(radius: 3)
+                .shadow(color: .black.opacity(0.05), radius: 5, x: 0, y: 2)
         )
     }
 }
 
 struct ProgressBar: View {
     let value: Double
-    
+
     var body: some View {
         GeometryReader { geometry in
             ZStack(alignment: .leading) {
-                RoundedRectangle(cornerRadius: 8)
+                // фон
+                RoundedRectangle(cornerRadius: 10)
                     .fill(Color.gray.opacity(0.2))
-                    .frame(height: 8)
-                
-                RoundedRectangle(cornerRadius: 8)
-                    .fill(Color.blue)
-                    .frame(width: geometry.size.width * value, height: 8)
+                    .frame(height: 12) // увеличил высоту
+
+                // прогресс с градиентом
+                RoundedRectangle(cornerRadius: 10)
+                    .fill(
+                        LinearGradient(
+                            gradient: Gradient(colors: [
+                                Color(hex: "4ECDC4"),
+                                Color(hex: "6C5CE7")
+                            ]),
+                            startPoint: .leading,
+                            endPoint: .trailing
+                        )
+                    )
+                    .frame(width: geometry.size.width * value, height: 12)
             }
         }
-        .frame(height: 8)
+        .frame(height: 12)
     }
 }
 
 struct ProgressStat: View {
     let title: String
     let value: String
-    
+
     var body: some View {
         VStack(spacing: 4) {
             Text(title)
-                .font(.caption)
+                .font(.manropeRegular(size: 12))
                 .foregroundColor(.secondary)
             Text(value)
                 .font(.system(size: 16, weight: .medium))

@@ -18,12 +18,13 @@ class TaskViewModel: ObservableObject {
 
     // MARK: - Init
     init() {
-        self.tasks = WeddingChecklistData.allTasks
+        self.tasks = []
     }
 
     func updateContext(_ context: ModelContext) {
         self.context = context
         loadAssignments()
+        loadWeddingTasks()
     }
 
     // MARK: - SwiftData loading
@@ -89,6 +90,18 @@ class TaskViewModel: ObservableObject {
         tasks.count
     }
 
+    func loadWeddingTasks() {
+        guard let context else {
+            self.tasks = []
+            return
+        }
+
+        let descriptor = FetchDescriptor<WeddingTask>(
+            sortBy: [SortDescriptor(\.title, order: .forward)]
+        )
+        self.tasks = (try? context.fetch(descriptor)) ?? []
+    }
+
     // Рекомендации
     var brideCheckListCompleted: Int {
         tasks.filter { $0.category == .brideChecklist && $0.isCompleted }.count
@@ -127,22 +140,30 @@ class TaskViewModel: ObservableObject {
 
     // Методы для изменения задач
     func addTask(_ task: WeddingTask) {
-        tasks.append(task)
+        guard let context else { return }
+        context.insert(task)
+        try? context.save()
+        loadWeddingTasks()
     }
 
     func toggleTaskCompletion(_ task: WeddingTask) {
-        if let index = tasks.firstIndex(where: { $0.id == task.id }) {
-            tasks[index].isCompleted.toggle()
-        }
+        guard let context else { return }
+        task.isCompleted.toggle()
+        try? context.save()
+        loadWeddingTasks()
     }
 
     func deleteTask(_ task: WeddingTask) {
-        tasks.removeAll { $0.id == task.id }
+        guard let context else { return }
+        context.delete(task)
+        try? context.save()
+        loadWeddingTasks()
     }
 
     func updateTask(_ task: WeddingTask) {
-        if let index = tasks.firstIndex(where: { $0.id == task.id }) {
-            tasks[index] = task
-        }
+        guard let context else { return }
+        // SwiftData отслеживает изменения автоматически, достаточно просто сохранить
+        try? context.save()
+        loadWeddingTasks()
     }
 }
