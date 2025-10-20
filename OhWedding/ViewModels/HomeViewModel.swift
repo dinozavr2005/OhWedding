@@ -32,8 +32,4 @@ class HomeViewModel: ObservableObject {
     func updateBrideName(_ name: String) {
         brideName = name
     }
-    
-    func updateWeddingImage(_ image: UIImage?) {
-        weddingImage = image
-    }
 } 

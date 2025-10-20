@@ -24,6 +24,7 @@ final class AppModel: ObservableObject {
                 SeatingTable.self,
                 Assignment.self,
                 WeddingTask.self,
+                WeddingInfo.self,
                 configurations: configuration
             )
             

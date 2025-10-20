@@ -1,12 +1,22 @@
 import Foundation
+import SwiftData
 
-struct WeddingInfo {
-    var groomName: String = ""
-    var brideName: String = ""
-    var weddingDate: Date = Date()
-    var budget: Double = 0
-    var completedTasks: Int = 0
-    var totalTasks: Int = 0
-    var confirmedGuests: Int = 0
-    var totalGuests: Int = 0
-} 
+@Model
+final class WeddingInfo {
+    var groomName: String
+    var brideName: String
+    var weddingDate: Date
+    var budget: Double
+
+    init(
+        groomName: String = "",
+        brideName: String = "",
+        weddingDate: Date = Date(),
+        budget: Double = 0
+    ) {
+        self.groomName = groomName
+        self.brideName = brideName
+        self.weddingDate = weddingDate
+        self.budget = budget
+    }
+}

@@ -6,104 +6,151 @@
 //
 
 import SwiftUI
-import PhotosUI
+import SwiftData
 
 struct WeddingSettingsView: View {
-    @ObservedObject var viewModel: HomeViewModel
     @Environment(\.dismiss) var dismiss
-    
+    @Environment(\.modelContext) private var context
+    @StateObject private var viewModel = WeddingInfoViewModel()
+
+    // локальные стейты (редактируем копию)
     @State private var groomName: String = ""
     @State private var brideName: String = ""
     @State private var weddingDate: Date = Date()
-    @State private var selectedItem: PhotosPickerItem?
-    @State private var weddingImage: Image?
-    
+    @State private var budgetText: String = ""
+
     var body: some View {
         NavigationView {
-            Form {
-                Section(header: Text("Основная информация")) {
-                    TextField("Имя жениха", text: $groomName)
-                    TextField("Имя невесты", text: $brideName)
-                    DatePicker("Дата свадьбы", selection: $weddingDate, displayedComponents: .date)
-                }
-                
-                Section(header: Text("Фото")) {
-                    HStack {
-                        Spacer()
-                        VStack {
-                            if let weddingImage {
-                                weddingImage
-                                    .resizable()
-                                    .scaledToFit()
-                                    .frame(height: 200)
-                                    .cornerRadius(10)
-                            } else if let savedImage = viewModel.weddingImage {
-                                Image(uiImage: savedImage)
-                                    .resizable()
-                                    .scaledToFit()
-                                    .frame(height: 200)
-                                    .cornerRadius(10)
-                            } else {
-                                Image(systemName: "photo")
-                                    .font(.system(size: 40))
-                                    .frame(height: 200)
-                                    .frame(maxWidth: .infinity)
-                                    .background(Color.gray.opacity(0.2))
-                                    .cornerRadius(10)
-                            }
-                            
-                            PhotosPicker(selection: $selectedItem,
-                                       matching: .images) {
-                                Text("Выбрать фото")
-                                    .foregroundColor(.blue)
-                            }
-                            .padding(.top, 8)
+            ScrollView {
+                VStack(alignment: .leading, spacing: 32) {
+                    // MARK: - Основная информация
+                    VStack(spacing: 16) {
+                        Text("ОСНОВНАЯ ИНФОРМАЦИЯ")
+                            .font(.manropeBold(size: 13))
+                            .foregroundColor(Color(hex: "835F8C"))
+                            .frame(maxWidth: .infinity, alignment: .center)
+                            .padding(.horizontal)
+
+                        TextField("Имя жениха", text: $groomName)
+                            .textFieldStyle(CustomTextFieldStyle(cornerRadius: 25))
+
+                        TextField("Имя невесты", text: $brideName)
+                            .textFieldStyle(CustomTextFieldStyle(cornerRadius: 25))
+
+                        HStack {
+                            Label("Дата свадьбы", systemImage: "calendar")
+                                .foregroundColor(Color(hex: "6C5CE7"))
+                            Spacer()
+                            DatePicker("", selection: $weddingDate, displayedComponents: .date)
+                                .labelsHidden()
                         }
-                        Spacer()
+                        .padding(.horizontal)
+                        .frame(height: 60)
+                        .background(Color.white)
+                        .cornerRadius(25)
+                        .shadow(color: Color.black.opacity(0.05), radius: 4, x: 0, y: 2)
+                    }
+                    .padding(.horizontal)
+
+                    // MARK: - Бюджет
+                    VStack(spacing: 16) {
+                        Text("БЮДЖЕТ")
+                            .font(.manropeBold(size: 13))
+                            .foregroundColor(Color(hex: "835F8C"))
+                            .frame(maxWidth: .infinity, alignment: .center)
+                            .padding(.horizontal)
+
+                        HStack {
+                            TextField("Введите бюджет свадьбы", text: $budgetText)
+                                .keyboardType(.numberPad)
+                                .onChange(of: budgetText) { newValue in
+                                    budgetText = formatBudgetInput(newValue)
+                                }
+
+                            Text("₽")
+                                .font(.system(size: 18, weight: .medium))
+                                .foregroundColor(.gray)
+                        }
+                        .padding(.horizontal)
+                        .frame(height: 56)
+                        .background(Color.white)
+                        .cornerRadius(25)
+                        .shadow(color: Color.black.opacity(0.05), radius: 4, x: 0, y: 2)
+                        .padding(.horizontal)
                     }
                 }
+                .padding(.vertical)
             }
+            .appBackground()
             .navigationTitle("Настройки свадьбы")
             .navigationBarItems(
-                leading: Button("Отмена") {
-                    dismiss()
-                },
+                leading: Button("Отмена") { dismiss() },
                 trailing: Button("Сохранить") {
                     saveSettings()
                     dismiss()
                 }
             )
             .onAppear {
-                loadCurrentSettings()
-            }
-            .onChange(of: selectedItem) { newItem in
-                Task {
-                    if let data = try? await newItem?.loadTransferable(type: Data.self),
-                       let uiImage = UIImage(data: data) {
-                        weddingImage = Image(uiImage: uiImage)
-                        viewModel.updateWeddingImage(uiImage)
+                viewModel.loadInfo(using: context)
+
+                if let info = viewModel.info {
+                    groomName = info.groomName
+                    brideName = info.brideName
+                    weddingDate = info.weddingDate
+                    if info.budget > 0 {
+                        budgetText = formatBudgetInput(String(Int(info.budget)))
                     }
                 }
             }
         }
     }
-    
-    private func loadCurrentSettings() {
-        groomName = viewModel.groomName
-        brideName = viewModel.brideName
-        weddingDate = viewModel.weddingDate
-        if let savedImage = viewModel.weddingImage {
-            weddingImage = Image(uiImage: savedImage)
-        }
-    }
-    
+
     private func saveSettings() {
-        viewModel.updateGroomName(groomName)
-        viewModel.updateBrideName(brideName)
-        viewModel.updateWeddingDate(weddingDate)
+        let cleanValue = budgetText.replacingOccurrences(of: " ", with: "")
+        let budgetValue = Double(cleanValue) ?? 0
+        viewModel.update(
+            using: context,
+            groom: groomName,
+            bride: brideName,
+            date: weddingDate,
+            budget: budgetValue
+        )
+    }
+
+    // форматирование с разделителями тысяч
+    private func formatBudgetInput(_ input: String) -> String {
+        let digits = input.replacingOccurrences(of: "[^0-9]", with: "", options: .regularExpression)
+        guard let number = Int(digits) else { return "" }
+
+        let formatter = NumberFormatter()
+        formatter.numberStyle = .decimal
+        formatter.groupingSeparator = " "
+        return formatter.string(from: NSNumber(value: number)) ?? digits
+    }
+}
+// MARK: - Кастомный стиль текстфилдов
+struct CustomTextFieldStyle: TextFieldStyle {
+    var cornerRadius: CGFloat = 35
+    var minHeight: CGFloat = 56
+
+    func _body(configuration: TextField<Self._Label>) -> some View {
+        configuration
+            .padding(.horizontal)
+            .frame(minHeight: minHeight)
+            .background(Color.white)
+            .cornerRadius(cornerRadius)
+            .shadow(color: Color.black.opacity(0.05), radius: 4, x: 0, y: 2)
     }
 }
 
 #Preview {
-    WeddingSettingsView(viewModel: HomeViewModel())
-} 
+    let config = ModelConfiguration(isStoredInMemoryOnly: true)
+    let container = try! ModelContainer(for: WeddingInfo.self, configurations: config)
+    let context = container.mainContext
+
+    let testWedding = WeddingInfo(groomName: "Иван", brideName: "Алина", budget: 50000)
+    context.insert(testWedding)
+
+    return WeddingSettingsView()
+        .modelContext(context) // пробрасываем контекст в Environment
+}

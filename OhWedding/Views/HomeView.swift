@@ -14,14 +14,14 @@ struct HomeView: View {
     @StateObject private var guestVM = GuestViewModel()
     @StateObject private var taskVM = TaskViewModel()
     @StateObject private var progressViewModel = ProgressViewModel()
-
+    @StateObject private var weddingVM = WeddingInfoViewModel()
     @State private var showingSettings = false
 
     var body: some View {
         NavigationView {
             ScrollView {
                 VStack(spacing: 24) {
-                    CountdownCard(days: homeVM.daysUntilWedding)
+                    CountdownCard(days: weddingVM.daysUntilWedding)
                     QuickActionsGridView()
                     ProgressOverviewView(viewModel: progressViewModel)
                 }
@@ -29,14 +29,17 @@ struct HomeView: View {
                 .padding(.top, 16)
             }
             .appBackground()
-            .navigationTitle(homeVM.weddingTitle)
+            .navigationTitle(weddingVM.weddingTitle)
             .task {
-                // загружаем данные
+                // wedding info
+                weddingVM.loadInfo(using: modelContext)
+
+                // гости и задачи
                 guestVM.loadGuests(using: modelContext)
                 guestVM.loadTables(using: modelContext)
                 taskVM.updateContext(modelContext)
 
-                // передаём в ProgressVM
+                // прогресс
                 progressViewModel.updateGuestProgress(
                     confirmed: guestVM.confirmedGuestsWithPlusOne,
                     total: guestVM.totalGuestsWithPlusOne
@@ -49,16 +52,17 @@ struct HomeView: View {
             }
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    Button(action: {
+                    Button {
                         showingSettings = true
-                    }) {
+                    } label: {
                         Image(systemName: "gearshape")
                             .foregroundColor(.black)
                     }
                 }
             }
             .sheet(isPresented: $showingSettings) {
-                WeddingSettingsView(viewModel: homeVM)
+                WeddingSettingsView()
+                    .environmentObject(weddingVM)
             }
         }
     }
