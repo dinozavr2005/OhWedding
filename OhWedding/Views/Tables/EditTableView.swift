@@ -59,7 +59,7 @@ struct EditTableView: View {
                 Section(header: Text("Посадить гостей")) {
                     ForEach(availableGuests) { guest in
                         MultipleSelectionRow(
-                            title: guest.name,
+                            title: guest.plusOne ? "\(guest.name) +1" : guest.name,
                             isSelected: selectedGuestIDs.contains(guest.uuid)
                         ) {
                             if selectedGuestIDs.contains(guest.uuid) {

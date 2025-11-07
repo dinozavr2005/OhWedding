@@ -174,11 +174,13 @@ struct GuestListView: View {
 
             Section(header: Text("Столы")) {
                 ForEach(viewModel.tables) { table in
+                    let occupied = table.guests.reduce(0) { $0 + ($1.plusOne ? 2 : 1) }
+
                     HStack {
                         VStack(alignment: .leading) {
                             Text(table.name)
                                 .font(.headline)
-                            Text("\(table.guests.count) из \(table.capacity)")
+                            Text("\(occupied) из \(table.capacity)")
                                 .font(.subheadline)
                                 .foregroundColor(.secondary)
                         }
