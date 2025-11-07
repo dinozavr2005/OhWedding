@@ -30,13 +30,11 @@ final class WeddingInfoViewModel: ObservableObject {
     func update(using context: ModelContext,
                 groom: String,
                 bride: String,
-                date: Date,
-                budget: Double) {
+                date: Date) {
         guard let info else { return }
         info.groomName = groom
         info.brideName = bride
         info.weddingDate = date
-        info.budget = budget
         save(context)
         objectWillChange.send() // 🔥 чтобы гарантированно пересчитался UI
     }
@@ -63,18 +61,5 @@ extension WeddingInfoViewModel {
         } else {
             return "Жених & Невеста"
         }
-    }
-}
-
-extension WeddingInfoViewModel {
-    var totalBudget: Double {
-        info?.budget ?? 0
-    }
-
-    func updateBudget(_ value: Double, using context: ModelContext) {
-        guard let info else { return }
-        info.budget = value
-        save(context)
-        objectWillChange.send()
     }
 }

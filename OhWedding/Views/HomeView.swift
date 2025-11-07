@@ -54,11 +54,6 @@ struct HomeView: View {
                     completed: taskVM.completedTasks,
                     total: taskVM.totalTasks
                 )
-
-                progressViewModel.updateBudgetProgress(
-                    expenses: budgetVM.totalExpenses,
-                    budget: weddingVM.totalBudget
-                )
             }
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
@@ -141,11 +136,6 @@ struct ProgressOverviewView: View {
                 ProgressStat(
                     title: "Гости",
                     value: "\(viewModel.confirmedGuests)/\(viewModel.totalGuests)"
-                )
-                Spacer()
-                ProgressStat(
-                    title: "Бюджет",
-                    value: String(format: "%.0f%%", (viewModel.totalExpenses / viewModel.totalBudget) * 100)
                 )
             }
         }

@@ -17,7 +17,6 @@ struct WeddingSettingsView: View {
     @State private var groomName: String = ""
     @State private var brideName: String = ""
     @State private var weddingDate: Date = Date()
-    @State private var budgetText: String = ""
 
     var body: some View {
         NavigationView {
@@ -51,33 +50,6 @@ struct WeddingSettingsView: View {
                         .shadow(color: Color.black.opacity(0.05), radius: 4, x: 0, y: 2)
                     }
                     .padding(.horizontal)
-
-                    // MARK: - Бюджет
-                    VStack(spacing: 16) {
-                        Text("БЮДЖЕТ")
-                            .font(.manropeBold(size: 13))
-                            .foregroundColor(Color(hex: "835F8C"))
-                            .frame(maxWidth: .infinity, alignment: .center)
-                            .padding(.horizontal)
-
-                        HStack {
-                            TextField("Введите бюджет свадьбы", text: $budgetText)
-                                .keyboardType(.numberPad)
-                                .onChange(of: budgetText) { newValue in
-                                    budgetText = formatBudgetInput(newValue)
-                                }
-
-                            Text("₽")
-                                .font(.system(size: 18, weight: .medium))
-                                .foregroundColor(.gray)
-                        }
-                        .padding(.horizontal)
-                        .frame(height: 56)
-                        .background(Color.white)
-                        .cornerRadius(25)
-                        .shadow(color: Color.black.opacity(0.05), radius: 4, x: 0, y: 2)
-                        .padding(.horizontal)
-                    }
                 }
                 .padding(.vertical)
             }
@@ -97,37 +69,21 @@ struct WeddingSettingsView: View {
                     groomName = info.groomName
                     brideName = info.brideName
                     weddingDate = info.weddingDate
-                    if info.budget > 0 {
-                        budgetText = formatBudgetInput(String(Int(info.budget)))
-                    }
                 }
             }
         }
     }
 
     private func saveSettings() {
-        let cleanValue = budgetText.replacingOccurrences(of: " ", with: "")
-        let budgetValue = Double(cleanValue) ?? 0
         viewModel.update(
             using: context,
             groom: groomName,
             bride: brideName,
-            date: weddingDate,
-            budget: budgetValue
+            date: weddingDate
         )
     }
-
-    // форматирование с разделителями тысяч
-    private func formatBudgetInput(_ input: String) -> String {
-        let digits = input.replacingOccurrences(of: "[^0-9]", with: "", options: .regularExpression)
-        guard let number = Int(digits) else { return "" }
-
-        let formatter = NumberFormatter()
-        formatter.numberStyle = .decimal
-        formatter.groupingSeparator = " "
-        return formatter.string(from: NSNumber(value: number)) ?? digits
-    }
 }
+
 // MARK: - Кастомный стиль текстфилдов
 struct CustomTextFieldStyle: TextFieldStyle {
     var cornerRadius: CGFloat = 35
@@ -148,7 +104,7 @@ struct CustomTextFieldStyle: TextFieldStyle {
     let container = try! ModelContainer(for: WeddingInfo.self, configurations: config)
     let context = container.mainContext
 
-    let testWedding = WeddingInfo(groomName: "Иван", brideName: "Алина", budget: 50000)
+    let testWedding = WeddingInfo(groomName: "Иван", brideName: "Алина")
     context.insert(testWedding)
 
     return WeddingSettingsView()

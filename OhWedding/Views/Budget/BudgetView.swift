@@ -35,9 +35,6 @@ struct BudgetView: View {
                 viewModel.updateExpense(updatedExpense, using: context)
             }
         }
-        .alert("Изменить бюджет", isPresented: $showingEditBudget) { editBudgetAlert } message: {
-            Text("Введите новую сумму бюджета")
-        }
         .onAppear {
             weddingViewModel.loadInfo(using: context)
             viewModel.load(using: context)
@@ -99,7 +96,7 @@ private extension BudgetView {
                 CategoryCell(
                     category: category,
                     isExpanded: expandedCategories.contains(category),
-                    totalBudget: weddingViewModel.totalBudget,
+                    totalBudget: viewModel.totalExpenses,
                     expenses: viewModel.expensesByCategory[category] ?? [],
                     onExpandToggle: { toggleCategory(category) },
                     onTap: { selectedCategory = category },
@@ -177,19 +174,6 @@ private extension BudgetView {
     var addExpenseSheet: some View {
         AddExpenseView { expense in
             viewModel.addExpense(expense, using: context)
-        }
-    }
-
-    var editBudgetAlert: some View {
-        Group {
-            TextField("Новый бюджет", text: $newBudget)
-                .keyboardType(.numberPad)
-            Button("Отмена", role: .cancel) {}
-            Button("Сохранить") {
-                if let budget = Double(newBudget) {
-                    weddingViewModel.updateBudget(budget, using: context)
-                }
-            }
         }
     }
 }
