@@ -65,3 +65,16 @@ extension WeddingInfoViewModel {
         }
     }
 }
+
+extension WeddingInfoViewModel {
+    var totalBudget: Double {
+        info?.budget ?? 0
+    }
+
+    func updateBudget(_ value: Double, using context: ModelContext) {
+        guard let info else { return }
+        info.budget = value
+        save(context)
+        objectWillChange.send()
+    }
+}

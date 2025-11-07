@@ -1,49 +1,81 @@
-import SwiftUI
+import Foundation
+import SwiftData
 
- final class BudgetViewModel: ObservableObject {
+@MainActor
+final class BudgetViewModel: ObservableObject {
     @Published var expenses: [Expense] = []
     @Published var selectedCategory: ExpenseCategory?
-    
+
+    // MARK: - Загрузка
+    func load(using context: ModelContext) {
+        if let result = try? context.fetch(FetchDescriptor<Expense>()) {
+            self.expenses = result
+        }
+    }
+
+    // MARK: - Добавление
+    func addExpense(_ expense: Expense, using context: ModelContext) {
+        context.insert(expense)
+        save(context)
+        load(using: context)
+    }
+
+    // MARK: - Обновление
+    func updateExpense(_ expense: Expense, using context: ModelContext) {
+        // Достаточно сохранить, изменения @Model отслеживаются автоматически
+        save(context)
+        load(using: context)
+    }
+
+    // MARK: - Удаление
+    func deleteExpense(_ expense: Expense, using context: ModelContext) {
+        context.delete(expense)
+        save(context)
+        load(using: context)
+    }
+
+    // MARK: - Подсчёты
     var filteredExpenses: [Expense] {
         if let category = selectedCategory {
             return expenses.filter { $0.category == category }
         }
         return expenses
     }
-    
+
+    /// Общая сумма всех расходов
     var totalExpenses: Double {
         expenses.reduce(0) { $0 + $1.amount }
     }
-    
-    var paidExpenses: Double {
-        expenses.filter { $0.isPaid }.reduce(0) { $0 + $1.amount }
+
+    /// Сумма реально оплаченная (учитывает авансы)
+    var paidAmount: Double {
+        expenses.reduce(0) { $0 + min($1.advance, $1.amount) }
     }
-    
-    var unpaidExpenses: Double {
-        expenses.filter { !$0.isPaid }.reduce(0) { $0 + $1.amount }
+
+    /// Сумма к оплате (долг)
+    var unpaidAmount: Double {
+        expenses.reduce(0) { $0 + max($1.amount - $1.advance, 0) }
     }
-    
+
+    /// Группировка по категориям
     var expensesByCategory: [ExpenseCategory: [Expense]] {
         Dictionary(grouping: expenses) { $0.category }
     }
-    
-    func addExpense(_ expense: Expense) {
-        expenses.append(expense)
+
+    /// Остаток бюджета (неизрасходованная сумма)
+    func remainingBudget(totalBudget: Double) -> Double {
+        max(totalBudget - totalExpenses, 0)
     }
-    
-    func updateExpense(_ expense: Expense) {
-        if let index = expenses.firstIndex(where: { $0.id == expense.id }) {
-            expenses[index] = expense
-        }
+
+    /// Подсчёт суммы по подкатегории
+    func amount(for category: ExpenseCategory, subcategory: String) -> Double {
+        expenses
+            .filter { $0.category == category && $0.subcategoryRaw == subcategory }
+            .reduce(0) { $0 + $1.amount }
     }
-    
-    func deleteExpense(_ expense: Expense) {
-        expenses.removeAll { $0.id == expense.id }
-    }
-    
-    func toggleExpensePayment(_ expense: Expense) {
-        if let index = expenses.firstIndex(where: { $0.id == expense.id }) {
-            expenses[index].isPaid.toggle()
-        }
+
+    // MARK: - Сохранение
+    private func save(_ context: ModelContext) {
+        try? context.save()
     }
 }

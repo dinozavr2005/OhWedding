@@ -25,6 +25,7 @@ final class AppModel: ObservableObject {
                 Assignment.self,
                 WeddingTask.self,
                 WeddingInfo.self,
+                Expense.self,
                 configurations: configuration
             )
             

@@ -15,6 +15,7 @@ struct HomeView: View {
     @StateObject private var taskVM = TaskViewModel()
     @StateObject private var progressViewModel = ProgressViewModel()
     @StateObject private var weddingVM = WeddingInfoViewModel()
+    @StateObject private var budgetVM = BudgetViewModel()
     @State private var showingSettings = false
 
     var body: some View {
@@ -34,10 +35,14 @@ struct HomeView: View {
                 // wedding info
                 weddingVM.loadInfo(using: modelContext)
 
-                // гости и задачи
+                // гости и столы
                 guestVM.loadGuests(using: modelContext)
                 guestVM.loadTables(using: modelContext)
+                // задачи
                 taskVM.updateContext(modelContext)
+
+                // расходы
+                budgetVM.load(using: modelContext)
 
                 // прогресс
                 progressViewModel.updateGuestProgress(
@@ -48,6 +53,11 @@ struct HomeView: View {
                 progressViewModel.updateTaskProgress(
                     completed: taskVM.completedTasks,
                     total: taskVM.totalTasks
+                )
+
+                progressViewModel.updateBudgetProgress(
+                    expenses: budgetVM.totalExpenses,
+                    budget: weddingVM.totalBudget
                 )
             }
             .toolbar {
