@@ -13,7 +13,8 @@ struct CategoryRow: View {
     let total: Double
 
     var progress: Double {
-        min(amount / total, 1.0)
+        guard total > 0 else { return 0 }
+        return min(amount / total, 1.0)
     }
 
     var body: some View {

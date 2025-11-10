@@ -57,8 +57,10 @@ struct AddTableView: View {
 
                 Section(header: Text("Посадить гостей")) {
                     ForEach(availableGuests) { guest in
+                        let title = guest.plusOne ? "\(guest.name) +1" : guest.name
+
                         MultipleSelectionRow(
-                            title: guest.name,
+                            title: title,
                             isSelected: selectedGuestIDs.contains(guest.uuid)
                         ) {
                             if selectedGuestIDs.contains(guest.uuid) {

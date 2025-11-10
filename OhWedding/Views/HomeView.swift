@@ -135,7 +135,7 @@ struct ProgressOverviewView: View {
                 Spacer()
                 ProgressStat(
                     title: "Гости",
-                    value: "\(viewModel.confirmedGuests)/\(viewModel.totalGuests)"
+                    value: "\(viewModel.totalGuests)"
                 )
             }
         }
