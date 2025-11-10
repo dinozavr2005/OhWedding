@@ -26,6 +26,9 @@ final class AppModel: ObservableObject {
                 WeddingTask.self,
                 WeddingInfo.self,
                 Expense.self,
+                TimingBlock.self,
+                TimingPosition.self,
+                TimingContent.self,
                 configurations: configuration
             )
             

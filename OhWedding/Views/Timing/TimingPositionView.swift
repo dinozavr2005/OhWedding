@@ -6,10 +6,11 @@
 //
 
 import SwiftUI
+import SwiftData
 
 struct TimingPositionView: View {
-    var block: TimingBlock
-    var position: TimingPosition
+    @Bindable var block: TimingBlock
+    @Bindable var position: TimingPosition
     @ObservedObject var viewModel: TimingViewModel
 
     @State private var newContentTitle: String = ""
@@ -31,20 +32,10 @@ struct TimingPositionView: View {
     private var header: some View {
         Group {
             if viewModel.isEditing {
-                // ✏️ Режим редактирования — DatePicker + TextField + delete button
                 HStack(alignment: .center, spacing: 10) {
                     DatePicker(
                         "",
-                        selection: Binding(
-                            get: { position.time },
-                            set: { newValue in
-                                viewModel.updatePosition(
-                                    in: block,
-                                    positionID: position.id,
-                                    newTime: newValue
-                                )
-                            }
-                        ),
+                        selection: $position.time,
                         displayedComponents: .hourAndMinute
                     )
                     .labelsHidden()
@@ -52,21 +43,9 @@ struct TimingPositionView: View {
                     .background(Color(UIColor.systemGray6))
                     .cornerRadius(6)
 
-                    TextField(
-                        "Название",
-                        text: Binding(
-                            get: { position.title },
-                            set: { newValue in
-                                viewModel.updatePosition(
-                                    in: block,
-                                    positionID: position.id,
-                                    newTitle: newValue
-                                )
-                            }
-                        )
-                    )
-                    .textFieldStyle(.roundedBorder)
-                    .frame(height: 36)
+                    TextField("Название", text: $position.title)
+                        .textFieldStyle(.roundedBorder)
+                        .frame(height: 36)
 
                     Spacer(minLength: 8)
 
@@ -79,7 +58,6 @@ struct TimingPositionView: View {
                     }
                 }
             } else {
-                // 👀 Режим просмотра — просто время + название
                 HStack(spacing: 8) {
                     Text(position.formattedTime)
                         .font(.subheadline)
@@ -101,7 +79,6 @@ struct TimingPositionView: View {
     private var contents: some View {
         VStack(alignment: .leading, spacing: 6) {
             if viewModel.isEditing {
-                // ✏️ Можно удалять элементы
                 ForEach(position.contents) { content in
                     HStack(spacing: 8) {
                         Text("• \(content.title)")
@@ -111,11 +88,7 @@ struct TimingPositionView: View {
                         Spacer()
 
                         Button {
-                            viewModel.deleteContent(
-                                from: block,
-                                positionID: position.id,
-                                content: content
-                            )
+                            viewModel.deleteContent(from: position, content: content)
                         } label: {
                             Image(systemName: "xmark.circle.fill")
                                 .foregroundColor(.gray)
@@ -124,7 +97,6 @@ struct TimingPositionView: View {
                     }
                 }
             } else {
-                // 👀 Только просмотр содержимого
                 ForEach(position.contents) { content in
                     Text("• \(content.title)")
                         .font(.caption)
@@ -144,11 +116,7 @@ struct TimingPositionView: View {
 
             Button {
                 guard !newContentTitle.isEmpty else { return }
-                viewModel.addContent(
-                    to: block,
-                    positionID: position.id,
-                    title: newContentTitle
-                )
+                viewModel.addContent(to: position, title: newContentTitle)
                 newContentTitle = ""
             } label: {
                 Image(systemName: "plus.circle.fill")

@@ -60,9 +60,30 @@ struct DataSeeder {
         }
     }
 
-    /// 👇 Вызываем все сразу
+    static func seedTimingIfNeeded(context: ModelContext) {
+        do {
+            let count = try context.fetchCount(FetchDescriptor<TimingBlock>())
+            guard count == 0 else {
+                print("ℹ️ Timing blocks already exist: \(count)")
+                return
+            }
+
+            // Используем предзаполненные данные
+            let sampleBlocks = TimingBlock.sampleData()
+            for block in sampleBlocks {
+                context.insert(block)
+            }
+
+            try context.save()
+            print("✅ Seeded \(sampleBlocks.count) timing blocks")
+        } catch {
+            print("❌ Failed to seed timing blocks:", error)
+        }
+    }
+
     static func seedAllIfNeeded(context: ModelContext) {
         seedAssignmentsIfNeeded(context: context)
         seedWeddingTasksIfNeeded(context: context)
+        seedTimingIfNeeded(context: context)
     }
 }

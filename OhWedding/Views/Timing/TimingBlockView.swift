@@ -6,9 +6,10 @@
 //
 
 import SwiftUI
+import SwiftData
 
 struct TimingBlockView: View {
-    @ObservedObject var block: TimingBlock
+    @Bindable var block: TimingBlock
     @ObservedObject var viewModel: TimingViewModel
 
     var body: some View {
@@ -58,7 +59,8 @@ struct TimingBlockView: View {
     // MARK: - Positions
     private var positions: some View {
         VStack(alignment: .leading, spacing: 8) {
-            ForEach(block.positions) { position in
+            // 🔹 Главное изменение: сортируем позиции по времени перед отображением
+            ForEach(block.positions.sorted(by: { $0.time < $1.time })) { position in
                 TimingPositionView(block: block, position: position, viewModel: viewModel)
             }
         }

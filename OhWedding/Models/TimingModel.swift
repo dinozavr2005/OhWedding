@@ -5,22 +5,33 @@
 //  Created by Buikliskii Vladimir on 09.11.2025.
 //
 
+import SwiftData
 import Foundation
 
 // MARK: - Наполнение позиции
-struct TimingContent: Identifiable, Codable, Hashable {
-    var id = UUID()
+@Model
+final class TimingContent {
     var title: String
+
+    init(title: String) {
+        self.title = title
+    }
 }
 
 // MARK: - Позиция (время + описание + наполнение)
-struct TimingPosition: Identifiable, Codable, Hashable {
-    var id = UUID()
+@Model
+final class TimingPosition {
     var time: Date
     var title: String
-    var contents: [TimingContent] = []
+    @Relationship(deleteRule: .cascade) var contents: [TimingContent] = []
 
-    // Удобное отображение
+    init(time: Date, title: String, contents: [TimingContent] = []) {
+        self.time = time
+        self.title = title
+        self.contents = contents
+    }
+
+    // Удобное форматирование времени
     var formattedTime: String {
         let formatter = DateFormatter()
         formatter.dateFormat = "HH:mm"
@@ -29,58 +40,53 @@ struct TimingPosition: Identifiable, Codable, Hashable {
 }
 
 // MARK: - Блок (например, "Утро", "Банкет")
-final class TimingBlock: Identifiable, ObservableObject, Codable {
-    var id = UUID()
-    @Published var title: String
-    @Published var positions: [TimingPosition] = []
+@Model
+final class TimingBlock {
+    var order: Double
+    var title: String
+    @Relationship(deleteRule: .cascade) var positions: [TimingPosition] = []
 
-    init(title: String, positions: [TimingPosition] = []) {
+    init(order: Double = 0, title: String, positions: [TimingPosition] = []) {
+        self.order = order
         self.title = title
         self.positions = positions
     }
-
-    // MARK: Codable
-    enum CodingKeys: CodingKey {
-        case id, title, positions
-    }
-
-    required init(from decoder: Decoder) throws {
-        let container = try decoder.container(keyedBy: CodingKeys.self)
-        id = try container.decode(UUID.self, forKey: .id)
-        title = try container.decode(String.self, forKey: .title)
-        positions = try container.decode([TimingPosition].self, forKey: .positions)
-    }
-
-    func encode(to encoder: Encoder) throws {
-        var container = encoder.container(keyedBy: CodingKeys.self)
-        try container.encode(id, forKey: .id)
-        try container.encode(title, forKey: .title)
-        try container.encode(positions, forKey: .positions)
-    }
 }
 
-// MARK: - Данные
+// MARK: - Предзаполненные данные (sampleData)
 extension TimingBlock {
     static func sampleData() -> [TimingBlock] {
         let calendar = Calendar.current
 
         return [
             TimingBlock(
+                order: 1,
                 title: "Утро невесты",
                 positions: [
                     TimingPosition(
                         time: calendar.date(from: DateComponents(hour: 8, minute: 0))!,
-                        title: "Подготовка",
+                        title: "Съёмка невесты",
                         contents: [
-                            TimingContent(title: "Съёмка невесты"),
-                            TimingContent(title: "Встреча"),
-                            TimingContent(title: "Съёмка молодожён")
+                            TimingContent(title: "Фотосессия")
+                        ]
+                    ),
+                    TimingPosition(
+                        time: calendar.date(from: DateComponents(hour: 8, minute: 30))!,
+                        title: "Встреча",
+                        contents: []
+                    ),
+                    TimingPosition(
+                        time: calendar.date(from: DateComponents(hour: 9, minute: 0))!,
+                        title: "Съёмка молодожён",
+                        contents: [
+                            TimingContent(title: "Фотосессия")
                         ]
                     )
                 ]
             ),
 
             TimingBlock(
+                order: 2,
                 title: "ЗАГС (если есть в этот день)",
                 positions: [
                     TimingPosition(
@@ -92,6 +98,7 @@ extension TimingBlock {
             ),
 
             TimingBlock(
+                order: 3,
                 title: "Welcome (1 час)",
                 positions: [
                     TimingPosition(
@@ -106,6 +113,7 @@ extension TimingBlock {
             ),
 
             TimingBlock(
+                order: 4,
                 title: "Регистрация (если есть)",
                 positions: [
                     TimingPosition(
@@ -120,6 +128,7 @@ extension TimingBlock {
             ),
 
             TimingBlock(
+                order: 5,
                 title: "Появление и банкет",
                 positions: [
                     TimingPosition(
@@ -160,6 +169,7 @@ extension TimingBlock {
             ),
 
             TimingBlock(
+                order: 6,
                 title: "SDE (танцы / свободное время)",
                 positions: [
                     TimingPosition(
