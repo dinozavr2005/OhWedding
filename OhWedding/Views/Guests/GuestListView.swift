@@ -217,8 +217,6 @@ struct GuestListView: View {
 
 
 #Preview {
-    NavigationView {
-        GuestListView()
-            .environmentObject(AppModel.shared)
-    }
+    GuestListView()
+        .environmentObject(AppModel.shared)
 }

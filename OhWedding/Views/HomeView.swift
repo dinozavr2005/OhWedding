@@ -106,7 +106,7 @@ struct QuickActionsGridView: View {
                 )
             }
 
-            NavigationLink(destination: Text("Тайминг")) {
+            NavigationLink(destination: TimingView()) {
                 QuickActionCard(
                     title: "Тайминг",
                     image: Image(systemName: "clock"),
