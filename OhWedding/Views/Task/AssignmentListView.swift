@@ -15,19 +15,26 @@ struct AssignmentListView: View {
         ScrollView {
             VStack(spacing: 16) {
                 ForEach(viewModel.assignments) { assignment in
-                    AssignmentCell(assignment: assignment)
-                        .padding(.horizontal)
+                    AssignmentCell(
+                        assignment: assignment,
+                        onToggle: {
+                            viewModel.toggleAssigmentCompletion(assignment)
+                            provideHapticFeedback() // виброотдача
+                        }
+                    )
                 }
             }
-            .padding(.vertical)
+            .padding(.horizontal, 20)
+            .padding(.vertical, 20)
         }
+        .appBackground()
         .navigationTitle("Задания для невесты")
+        .navigationBarTitleDisplayMode(.inline)
     }
-}
 
-#Preview {
-    NavigationView {
-        AssignmentListView()
-            .environmentObject(TaskViewModel())
+    // MARK: - Виброотдача
+    private func provideHapticFeedback() {
+        let generator = UINotificationFeedbackGenerator()
+        generator.notificationOccurred(.success)
     }
 }

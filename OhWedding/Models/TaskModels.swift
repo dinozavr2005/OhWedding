@@ -8,13 +8,15 @@ final class WeddingTask {
     var isCompleted: Bool
     var dueDate: Date?
     var category: TaskCategory
+    var emoji: String?
 
-    init(id: UUID = UUID(), title: String, isCompleted: Bool, dueDate: Date?, category: TaskCategory) {
+    init(id: UUID = UUID(), title: String, isCompleted: Bool, dueDate: Date?, category: TaskCategory, emoji: String?) {
         self.id = id
         self.title = title
         self.isCompleted = isCompleted
         self.dueDate = dueDate
         self.category = category
+        self.emoji = emoji
     }
 }
 

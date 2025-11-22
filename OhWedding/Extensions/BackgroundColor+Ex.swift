@@ -9,8 +9,12 @@ import SwiftUI
 
 struct AppBackgroundModifier: ViewModifier {
     func body(content: Content) -> some View {
-        content
-            .background(Color.appBackground.ignoresSafeArea())
+        ZStack {
+            Color.appBackground
+                .ignoresSafeArea()   // ← теперь правильно
+
+            content
+        }
     }
 }
 

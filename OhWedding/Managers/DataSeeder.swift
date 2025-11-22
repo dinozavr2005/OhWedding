@@ -48,8 +48,10 @@ struct DataSeeder {
                     title: task.title,
                     isCompleted: task.isCompleted,
                     dueDate: task.dueDate,
-                    category: task.category
+                    category: task.category,
+                    emoji: task.emoji
                 )
+
                 context.insert(copy)
             }
 

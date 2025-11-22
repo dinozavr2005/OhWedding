@@ -11,45 +11,68 @@ struct WeddingCheckListView: View {
     @EnvironmentObject var viewModel: TaskViewModel
     @State private var isPresentingAdd = false
 
+    // Задачи для этой категории
+    private var checklistTasks: [WeddingTask] {
+        viewModel.tasks.filter { $0.category == .weddingChecklist }
+    }
+
     var body: some View {
         List {
-            // Отображаем все задачи с категорией .weddingChecklist из viewModel
-            ForEach(viewModel.tasks.filter { $0.category == .weddingChecklist }) { task in
+            ForEach(checklistTasks) { task in
                 if let idx = viewModel.tasks.firstIndex(where: { $0.id == task.id }) {
-                    TaskRowView(task: $viewModel.tasks[idx])  // Отображение задачи
-                }
-            }
-            .onDelete { offsets in
-                // Для каждого удаляемого индекса удаляем задачу
-                offsets.forEach { offset in
-                    // Ищем задачу с этим индексом среди задач, отфильтрованных по категории
-                    let taskToDelete = viewModel.tasks.filter { $0.category == .weddingChecklist }[offset]
-                    viewModel.deleteTask(taskToDelete)  // Удаление задачи из viewModel
+
+                    TaskCardView(task: $viewModel.tasks[idx])
+                        .listRowSeparator(.hidden)
+                        .listRowBackground(Color.clear)
+                        .listRowInsets(EdgeInsets(
+                            top: 6,
+                            leading: 20,
+                            bottom: 6,
+                            trailing: 20
+                        ))
+                        .swipeActions(edge: .trailing, allowsFullSwipe: false) {
+
+                            Button(role: .destructive) {
+                                viewModel.deleteTask(task)
+                                provideHaptic()
+                            } label: {
+                                Label("Удалить", systemImage: "trash.fill")
+                            }
+                            .tint(.red)
+                        }
                 }
             }
         }
-        .listStyle(InsetGroupedListStyle())  // Стиль списка
-        .navigationTitle("Чек-лист свадьбы")  // Заголовок экрана
+        .listStyle(.plain)
+        .scrollContentBackground(.hidden)
+        .background(Color.clear)
+        .appBackground()
+        .navigationTitle("Чек-лист свадьбы")
+        .navigationBarTitleDisplayMode(.inline)
         .toolbar {
-            // Кнопка для добавления задачи
-            ToolbarItem(placement: .navigationBarTrailing) {
-                Button {
-                    isPresentingAdd = true
-                } label: {
-                    Image(systemName: "plus")
-                }
+            Button {
+                isPresentingAdd = true
+            } label: {
+                Image(systemName: "plus")
             }
         }
-        // Модальный экран для добавления новой задачи
         .sheet(isPresented: $isPresentingAdd) {
-            // Передаем категорию .weddingChecklist в AddTaskView
-            AddTaskView(isPresented: $isPresentingAdd, category: .weddingChecklist)
-                .environmentObject(viewModel)
+            AddTaskView(
+                isPresented: $isPresentingAdd,
+                category: .weddingChecklist
+            )
+            .environmentObject(viewModel)
         }
+    }
+
+    private func provideHaptic() {
+        UINotificationFeedbackGenerator().notificationOccurred(.success)
     }
 }
 
 #Preview {
-    WeddingCheckListView()
-        .environmentObject(TaskViewModel())
+    NavigationView {
+        WeddingCheckListView()
+            .environmentObject(TaskViewModel())
+    }
 }

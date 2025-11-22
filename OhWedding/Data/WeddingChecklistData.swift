@@ -8,62 +8,85 @@
 import Foundation
 
 struct WeddingChecklistData {
-    /// Общие задачи, относящиеся ко всей свадьбе
+
+    // MARK: - Общие задачи
     static let commonTasks: [WeddingTask] = [
-        WeddingTask(title: "Кольца", isCompleted: false, dueDate: Date(), category: .weddingChecklist),
-        WeddingTask(title: "Брачная ночь", isCompleted: false, dueDate: Date(), category: .weddingChecklist)
+        WeddingTask(title: "Кольца",
+                    isCompleted: false,
+                    dueDate: nil,
+                    category: .weddingChecklist,
+                    emoji: "💍"),
+
+        WeddingTask(title: "Брачная ночь",
+                    isCompleted: false,
+                    dueDate: nil,
+                    category: .weddingChecklist,
+                    emoji: "🌙")
     ]
 
-    /// Задачи для невесты (все имеют категорию .coupleChecklist)
+    // MARK: - Задачи для невесты
     static let brideTasks: [WeddingTask] = [
-        WeddingTask(title: "Платье", isCompleted: false, dueDate: Date(), category: .brideChecklist),
-        WeddingTask(title: "Второе платье (полегче)", isCompleted: false, dueDate: Date(), category: .brideChecklist),
-        WeddingTask(title: "Туфли", isCompleted: false, dueDate: Date(), category: .brideChecklist),
-        WeddingTask(title: "Сменная обувь", isCompleted: false, dueDate: Date(), category: .brideChecklist),
-        WeddingTask(title: "Фата", isCompleted: false, dueDate: Date(), category: .brideChecklist),
-        WeddingTask(title: "Заколка", isCompleted: false, dueDate: Date(), category: .brideChecklist),
-        WeddingTask(title: "Бельё", isCompleted: false, dueDate: Date(), category: .brideChecklist),
-        WeddingTask(title: "Утренний образ", isCompleted: false, dueDate: Date(), category: .brideChecklist),
-        WeddingTask(title: "Утренний образ подруг", isCompleted: false, dueDate: Date(), category: .brideChecklist),
-        WeddingTask(title: "Вечерний образ", isCompleted: false, dueDate: Date(), category: .brideChecklist),
-        WeddingTask(title: "Прическа/укладка", isCompleted: false, dueDate: Date(), category: .brideChecklist),
-        WeddingTask(title: "Макияж", isCompleted: false, dueDate: Date(), category: .brideChecklist),
-        WeddingTask(title: "Укладка", isCompleted: false, dueDate: Date(), category: .brideChecklist),
-        WeddingTask(title: "Аксессуары", isCompleted: false, dueDate: Date(), category: .brideChecklist),
-        WeddingTask(title: "Манекен для платья", isCompleted: false, dueDate: Date(), category: .brideChecklist),
-        WeddingTask(title: "Подвязка", isCompleted: false, dueDate: Date(), category: .brideChecklist),
-        WeddingTask(title: "Коррекция бровей", isCompleted: false, dueDate: Date(), category: .brideChecklist),
-        WeddingTask(title: "Ресницы", isCompleted: false, dueDate: Date(), category: .brideChecklist),
-        WeddingTask(title: "Маникюр", isCompleted: false, dueDate: Date(), category: .brideChecklist),
-        WeddingTask(title: "Педикюр", isCompleted: false, dueDate: Date(), category: .brideChecklist),
-        WeddingTask(title: "Косметолог", isCompleted: false, dueDate: Date(), category: .brideChecklist),
-        WeddingTask(title: "Эпиляция", isCompleted: false, dueDate: Date(), category: .brideChecklist),
-        WeddingTask(title: "Отбеливание/чистка зубов", isCompleted: false, dueDate: Date(), category: .brideChecklist),
-        WeddingTask(title: "Нижнее белье", isCompleted: false, dueDate: Date(), category: .brideChecklist),
-        WeddingTask(title: "Верхняя одежда/накидка/плед", isCompleted: false, dueDate: Date(), category: .brideChecklist),
-        WeddingTask(title: "Духи", isCompleted: false, dueDate: Date(), category: .brideChecklist),
-        WeddingTask(title: "Зонт", isCompleted: false, dueDate: Date(), category: .brideChecklist)
+        WeddingTask(title: "Платье", isCompleted: false, dueDate: nil, category: .brideChecklist, emoji: "👗"),
+        WeddingTask(title: "Второе платье (полегче)", isCompleted: false, dueDate: nil, category: .brideChecklist, emoji: "👗"),
+        WeddingTask(title: "Туфли", isCompleted: false, dueDate: nil, category: .brideChecklist, emoji: "👠"),
+        WeddingTask(title: "Сменная обувь", isCompleted: false, dueDate: nil, category: .brideChecklist, emoji: "👡"),
+        WeddingTask(title: "Фата", isCompleted: false, dueDate: nil, category: .brideChecklist, emoji: "👰"),
+        WeddingTask(title: "Заколка", isCompleted: false, dueDate: nil, category: .brideChecklist, emoji: "✨"),
+        WeddingTask(title: "Бельё", isCompleted: false, dueDate: nil, category: .brideChecklist, emoji: "🩱"),
+
+        WeddingTask(title: "Утренний образ", isCompleted: false, dueDate: nil, category: .brideChecklist, emoji: "💄"),
+        WeddingTask(title: "Утренний образ подруг", isCompleted: false, dueDate: nil, category: .brideChecklist, emoji: "💄"),
+        WeddingTask(title: "Вечерний образ", isCompleted: false, dueDate: nil, category: .brideChecklist, emoji: "👗"),
+
+        WeddingTask(title: "Прическа/укладка", isCompleted: false, dueDate: nil, category: .brideChecklist, emoji: "💇‍♀️"),
+        WeddingTask(title: "Макияж", isCompleted: false, dueDate: nil, category: .brideChecklist, emoji: "💋"),
+        WeddingTask(title: "Укладка (повтор)", isCompleted: false, dueDate: nil, category: .brideChecklist, emoji: "💇‍♀️"),
+
+        WeddingTask(title: "Аксессуары", isCompleted: false, dueDate: nil, category: .brideChecklist, emoji: "💍"),
+        WeddingTask(title: "Манекен для платья", isCompleted: false, dueDate: nil, category: .brideChecklist, emoji: "🧵"),
+        WeddingTask(title: "Подвязка", isCompleted: false, dueDate: nil, category: .brideChecklist, emoji: "🩱"),
+
+        WeddingTask(title: "Коррекция бровей", isCompleted: false, dueDate: nil, category: .brideChecklist, emoji: "✨"),
+        WeddingTask(title: "Ресницы", isCompleted: false, dueDate: nil, category: .brideChecklist, emoji: "👁️"),
+
+        WeddingTask(title: "Маникюр", isCompleted: false, dueDate: nil, category: .brideChecklist, emoji: "💅"),
+        WeddingTask(title: "Педикюр", isCompleted: false, dueDate: nil, category: .brideChecklist, emoji: "🦶"),
+
+        WeddingTask(title: "Косметолог", isCompleted: false, dueDate: nil, category: .brideChecklist, emoji: "💆‍♀️"),
+        WeddingTask(title: "Эпиляция", isCompleted: false, dueDate: nil, category: .brideChecklist, emoji: "🪒"),
+
+        WeddingTask(title: "Чистка зубов", isCompleted: false, dueDate: nil, category: .brideChecklist, emoji: "🦷"),
+
+        WeddingTask(title: "Нижнее белье", isCompleted: false, dueDate: nil, category: .brideChecklist, emoji: "🩱"),
+        WeddingTask(title: "Верхняя одежда/накидка/плед", isCompleted: false, dueDate: nil, category: .brideChecklist, emoji: "🧥"),
+
+        WeddingTask(title: "Духи", isCompleted: false, dueDate: nil, category: .brideChecklist, emoji: "🌸"),
+        WeddingTask(title: "Зонт", isCompleted: false, dueDate: nil, category: .brideChecklist, emoji: "☔")
     ]
 
-    /// Задачи для жениха (также с категорией .coupleChecklist)
+    // MARK: - Задачи для жениха
     static let groomTasks: [WeddingTask] = [
-        WeddingTask(title: "Костюм", isCompleted: false, dueDate: Date(), category: .groomCheckList),
-        WeddingTask(title: "Рубашка", isCompleted: false, dueDate: Date(), category: .groomCheckList),
-        WeddingTask(title: "Вторая рубашка (на смену)", isCompleted: false, dueDate: Date(), category: .groomCheckList),
-        WeddingTask(title: "Обувь", isCompleted: false, dueDate: Date(), category: .groomCheckList),
-        WeddingTask(title: "Галстук/бабочка/платок", isCompleted: false, dueDate: Date(), category: .groomCheckList),
-        WeddingTask(title: "Ремень", isCompleted: false, dueDate: Date(), category: .groomCheckList),
-        WeddingTask(title: "Носки", isCompleted: false, dueDate: Date(), category: .groomCheckList),
-        WeddingTask(title: "Прическа/укладка/борода", isCompleted: false, dueDate: Date(), category: .groomCheckList),
-        WeddingTask(title: "Косметолог", isCompleted: false, dueDate: Date(), category: .groomCheckList),
-        WeddingTask(title: "Отбеливание/чистка зубов", isCompleted: false, dueDate: Date(), category: .groomCheckList),
-        WeddingTask(title: "Коррекция бровей", isCompleted: false, dueDate: Date(), category: .groomCheckList),
-        WeddingTask(title: "Маникюр", isCompleted: false, dueDate: Date(), category: .groomCheckList),
-        WeddingTask(title: "Верхняя одежда/накидка/плед", isCompleted: false, dueDate: Date(), category: .groomCheckList),
-        WeddingTask(title: "Зонт", isCompleted: false, dueDate: Date(), category: .groomCheckList)
+        WeddingTask(title: "Костюм", isCompleted: false, dueDate: nil, category: .groomCheckList, emoji: "🤵"),
+        WeddingTask(title: "Рубашка", isCompleted: false, dueDate: nil, category: .groomCheckList, emoji: "👔"),
+        WeddingTask(title: "Вторая рубашка", isCompleted: false, dueDate: nil, category: .groomCheckList, emoji: "👕"),
+        WeddingTask(title: "Обувь", isCompleted: false, dueDate: nil, category: .groomCheckList, emoji: "👞"),
+        WeddingTask(title: "Галстук/бабочка", isCompleted: false, dueDate: nil, category: .groomCheckList, emoji: "🎀"),
+        WeddingTask(title: "Ремень", isCompleted: false, dueDate: nil, category: .groomCheckList, emoji: "🧢"),
+        WeddingTask(title: "Носки", isCompleted: false, dueDate: nil, category: .groomCheckList, emoji: "🧦"),
+
+        WeddingTask(title: "Прическа/борода", isCompleted: false, dueDate: nil, category: .groomCheckList, emoji: "💇‍♂️"),
+        WeddingTask(title: "Косметолог", isCompleted: false, dueDate: nil, category: .groomCheckList, emoji: "💆‍♂️"),
+
+        WeddingTask(title: "Чистка зубов", isCompleted: false, dueDate: nil, category: .groomCheckList, emoji: "🦷"),
+        WeddingTask(title: "Коррекция бровей", isCompleted: false, dueDate: nil, category: .groomCheckList, emoji: "✨"),
+
+        WeddingTask(title: "Маникюр", isCompleted: false, dueDate: nil, category: .groomCheckList, emoji: "💅"),
+        WeddingTask(title: "Верхняя одежда/плед", isCompleted: false, dueDate: nil, category: .groomCheckList, emoji: "🧥"),
+
+        WeddingTask(title: "Зонт", isCompleted: false, dueDate: nil, category: .groomCheckList, emoji: "☔")
     ]
 
-    /// Все задачи из чек-листа
+    // MARK: - Всё вместе
     static var allTasks: [WeddingTask] {
         commonTasks + brideTasks + groomTasks
     }

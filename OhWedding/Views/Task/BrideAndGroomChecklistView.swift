@@ -10,50 +10,70 @@ import SwiftUI
 struct BrideAndGroomChecklistView: View {
     @EnvironmentObject var viewModel: TaskViewModel
     @State private var isPresentingAdd = false
-    var isBride: Bool  // Флаг для определения, невеста ли это или жених
+    var isBride: Bool
+
+    // Задачи только нужной категории
+    private var tasks: [WeddingTask] {
+        viewModel.tasks.filter { $0.category == (isBride ? .brideChecklist : .groomCheckList) }
+    }
 
     var body: some View {
         List {
-            // В зависимости от значения isBride, отображаем задачи для невесты или жениха
-            let tasks = viewModel.tasks.filter { $0.category == (isBride ? .brideChecklist : .groomCheckList) }
-
-            // Отображаем задачи для соответствующего чек-листа
             ForEach(tasks) { task in
                 if let idx = viewModel.tasks.firstIndex(where: { $0.id == task.id }) {
-                    TaskRowView(task: $viewModel.tasks[idx])  // Отображение задачи
-                }
-            }
-            .onDelete { offsets in
-                // Для каждого удаляемого индекса удаляем задачу
-                offsets.forEach { index in
-                    let taskToDelete = tasks[index]
-                    viewModel.deleteTask(taskToDelete)  // Удаление задачи из viewModel
+
+                    TaskCardView(task: $viewModel.tasks[idx])
+                        .listRowSeparator(.hidden)
+                        .listRowBackground(Color.clear)
+                        .listRowInsets(EdgeInsets(
+                            top: 6,      // ← расстояние между ячейками
+                            leading: 20,
+                            bottom: 6,
+                            trailing: 20
+                        ))
+                        .swipeActions(edge: .trailing, allowsFullSwipe: false) {
+
+                            Button(role: .destructive) {
+                                viewModel.deleteTask(task)
+                                provideHaptic()
+                            } label: {
+                                Label("Удалить", systemImage: "trash.fill")
+                            }
+                            .tint(.red)
+                        }
                 }
             }
         }
-        .listStyle(InsetGroupedListStyle())  // Стиль списка
-        .navigationTitle(isBride ? "Чек-лист невесты" : "Чек-лист жениха")  // Заголовок экрана
+        .listStyle(.plain)
+        .scrollContentBackground(.hidden)
+        .background(Color.clear)
+        .appBackground()
+        .navigationTitle(isBride ? "Чек-лист невесты" : "Чек-лист жениха")
+        .navigationBarTitleDisplayMode(.inline)
         .toolbar {
-            // Кнопка для добавления задачи
-            ToolbarItem(placement: .navigationBarTrailing) {
-                Button {
-                    isPresentingAdd = true
-                } label: {
-                    Image(systemName: "plus")
-                }
+            Button {
+                isPresentingAdd = true
+            } label: {
+                Image(systemName: "plus")
             }
         }
-        // Модальный экран для добавления новой задачи
         .sheet(isPresented: $isPresentingAdd) {
-            // Передаем флаг isBride в AddTaskView, чтобы определить, в какую категорию добавить задачу
-            AddTaskView(isPresented: $isPresentingAdd, category: isBride ? .brideChecklist : .groomCheckList)
-                .environmentObject(viewModel)
+            AddTaskView(
+                isPresented: $isPresentingAdd,
+                category: isBride ? .brideChecklist : .groomCheckList
+            )
+            .environmentObject(viewModel)
         }
+    }
+
+    private func provideHaptic() {
+        UINotificationFeedbackGenerator().notificationOccurred(.success)
     }
 }
 
 #Preview {
-    BrideAndGroomChecklistView(isBride: true)
-        .environmentObject(TaskViewModel())
+    NavigationView {
+        BrideAndGroomChecklistView(isBride: true)
+            .environmentObject(TaskViewModel())
+    }
 }
-
