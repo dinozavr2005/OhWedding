@@ -26,7 +26,9 @@ struct BudgetView: View {
             categorySection
             recentExpensesSection
         }
+        .appBackground()
         .background(categoryNavigationLink)
+        .scrollContentBackground(.hidden)
         .navigationTitle("Бюджет")
         .toolbar { addExpenseButton }
         .sheet(isPresented: $showingAddExpense) { addExpenseSheet }
@@ -51,32 +53,29 @@ private extension BudgetView {
                 // MARK: - Расходы
                 HStack {
                     Text("Расходы:")
-                        .font(.headline)
+                        .font(.manropeSemiBold(size: 16))
                     Spacer()
                     Text(viewModel.totalExpenses.formattedCurrency)
-                        .font(.headline)
-                        .fontWeight(.semibold)
+                        .font(.manropeSemiBold(size: 16))
                 }
 
                 VStack(alignment: .leading, spacing: 4) {
                     HStack {
                         Text(" Предоплата:")
-                            .font(.subheadline)
+                            .font(.manropeRegular(size: 14))
                             .foregroundColor(.secondary)
                         Spacer()
                         Text(viewModel.paidAmount.formattedCurrency)
-                            .font(.subheadline)
-                            .fontWeight(.semibold)
+                            .font(.manropeSemiBold(size: 14))
                     }
 
                     HStack {
                         Text(" Остаток:")
-                            .font(.subheadline)
+                            .font(.manropeRegular(size: 14))
                             .foregroundColor(.secondary)
                         Spacer()
                         Text(viewModel.unpaidAmount.formattedCurrency)
-                            .font(.subheadline)
-                            .fontWeight(.semibold)
+                            .font(.manropeSemiBold(size: 14))
                     }
                 }
             }

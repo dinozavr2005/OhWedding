@@ -35,6 +35,8 @@ struct EditExpenseView: View {
                 financeSection
                 notesSection
             }
+            .scrollContentBackground(.hidden)
+            .appBackground()
             .navigationTitle("Редактирование")
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
@@ -58,10 +60,41 @@ private extension EditExpenseView {
         Section("Основная информация") {
             TextField("Название", text: $expense.title)
 
-            Picker("Категория", selection: $expense.category) {
-                ForEach(ExpenseCategory.allCases, id: \.self) { category in
-                    Label(category.rawValue, systemImage: category.icon)
-                        .tag(category)
+            HStack {
+                Text("Категория")
+                Spacer()
+
+                Menu {
+                    ForEach(ExpenseCategory.allCases, id: \.self) { c in
+                        Button {
+                            expense.category = c
+                            if !subcategories.contains(expense.subcategory) {
+                                expense.subcategory = ""
+                            }
+                        } label: {
+                            HStack(spacing: 8) {
+                                Image(c.icon)
+                                    .resizable()
+                                    .scaledToFit()
+                                    .frame(width: 16, height: 16)
+                                Text(c.rawValue)
+                            }
+                        }
+                    }
+                } label: {
+                    HStack(spacing: 8) {
+                        Image(expense.category.icon)
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 16, height: 16)
+
+                        Text(expense.category.rawValue)
+                            .foregroundStyle(.primary)
+
+                        Image(systemName: "chevron.up.chevron.down")
+                            .font(.footnote)
+                            .foregroundStyle(.primary)
+                    }
                 }
             }
 

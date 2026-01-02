@@ -11,9 +11,10 @@ struct AppBackgroundModifier: ViewModifier {
     func body(content: Content) -> some View {
         ZStack {
             Color.appBackground
-                .ignoresSafeArea()   // ← теперь правильно
+                .ignoresSafeArea()
 
             content
+                .scrollContentBackground(.hidden)
         }
     }
 }

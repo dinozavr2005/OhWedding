@@ -94,6 +94,7 @@ struct CategoryDetailView: View {
                 .listStyle(.insetGrouped)
             }
         }
+        .appBackground()
         .navigationTitle(category.rawValue)
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
@@ -104,8 +105,7 @@ struct CategoryDetailView: View {
             viewModel.load(using: context)
         }
         .sheet(isPresented: $showingAddExpense) {
-            // Используем твой AddExpenseView как есть
-            AddExpenseView { expense in
+            AddExpenseView(initialCategory: category) { expense in
                 viewModel.addExpense(expense, using: context)
             }
         }

@@ -12,7 +12,7 @@ struct AddExpenseView: View {
     @State private var title = ""
     @State private var amount = ""
     @State private var advance = ""
-    @State private var category: ExpenseCategory = .other
+    @State private var category: ExpenseCategory
     @State private var subcategory = ""
     @State private var date = Date()
     @State private var notes = ""
@@ -28,6 +28,12 @@ struct AddExpenseView: View {
         return max(total - paid, 0)
     }
 
+    init(initialCategory: ExpenseCategory = .other,
+         onAdd: @escaping (Expense) -> Void) {
+        _category = State(initialValue: initialCategory)
+        self.onAdd = onAdd
+    }
+
     var body: some View {
         NavigationView {
             Form {
@@ -35,10 +41,38 @@ struct AddExpenseView: View {
                 Section(header: Text("Основная информация")) {
                     TextField("Название", text: $title)
 
-                    Picker("Категория", selection: $category) {
-                        ForEach(ExpenseCategory.allCases, id: \.self) { category in
-                            Label(category.rawValue, systemImage: category.icon)
-                                .tag(category)
+                    HStack {
+                        Text("Категория")
+                        Spacer()
+
+                        Menu {
+                            ForEach(ExpenseCategory.allCases, id: \.self) { c in
+                                Button {
+                                    category = c
+                                } label: {
+                                    HStack(spacing: 8) {
+                                        Image(c.icon)
+                                            .resizable()
+                                            .scaledToFit()
+                                            .frame(width: 16, height: 16)
+                                        Text(c.rawValue)
+                                    }
+                                }
+                            }
+                        } label: {
+                            HStack(spacing: 8) {
+                                Image(category.icon)
+                                    .resizable()
+                                    .scaledToFit()
+                                    .frame(width: 16, height: 16)
+
+                                Text(category.rawValue)
+                                    .foregroundStyle(.primary)
+
+                                Image(systemName: "chevron.up.chevron.down")
+                                    .font(.footnote)
+                                    .foregroundStyle(.primary)
+                            }
                         }
                     }
                     .onChange(of: category) { _ in
@@ -88,6 +122,7 @@ struct AddExpenseView: View {
                     TextField("Заметки", text: $notes)
                 }
             }
+            .appBackground()
             .navigationTitle("Новый расход")
             .navigationBarItems(
                 leading: Button("Отмена") { dismiss() },
@@ -111,6 +146,14 @@ struct AddExpenseView: View {
                 }
                 .disabled(title.isEmpty || amount.isEmpty)
             )
+        }
+    }
+}
+
+struct AddExpenseView_Previews: PreviewProvider {
+    static var previews: some View {
+        AddExpenseView { expense in
+            print(expense)
         }
     }
 }

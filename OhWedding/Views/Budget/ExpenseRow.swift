@@ -17,7 +17,7 @@ struct ExpenseRow: View {
                     .font(.headline)
 
                 HStack {
-                    Image(systemName: expense.category.icon)
+                    Image(expense.category.icon)
                         .foregroundColor(.blue)
                     Text(expense.category.rawValue)
                         .font(.caption)

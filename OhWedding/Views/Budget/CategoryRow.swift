@@ -12,29 +12,39 @@ struct CategoryRow: View {
     let amount: Double
     let total: Double
 
-    var progress: Double {
+    private var progress: Double {
         guard total > 0 else { return 0 }
         return min(amount / total, 1.0)
     }
 
     var body: some View {
-        HStack {
-            Image(systemName: category.icon)
-                .foregroundColor(.blue)
-                .frame(width: 30)
+        HStack(spacing: 12) {
+            Image(category.icon)
+                .renderingMode(.original)
+                .resizable()
+                .scaledToFit()
+                .frame(width: 34, height: 34)
 
-            VStack(alignment: .leading) {
+            VStack(alignment: .leading, spacing: 2) {
                 Text(category.rawValue)
-                Text(String(format: "%.0f ₽", amount))
-                    .font(.caption)
-                    .foregroundColor(.secondary)
+                    .font(.manropeSemiBold(size: 16))
+                    .foregroundColor(.primary)
+
+                Text(amount.formatted(
+                    .number
+                        .grouping(.automatic)   // ← 100 000
+                        .precision(.fractionLength(0))
+                ) + " ₽")
+                .font(.manropeRegular(size: 14))
+                .foregroundColor(.black)
             }
 
             Spacer()
 
-            Text(String(format: "%.0f%%", progress * 100))
-                .font(.caption)
+            Text(progress.formatted(.percent.precision(.fractionLength(0))))
+                .font(.manropeRegular(size: 14))
                 .foregroundColor(.secondary)
         }
+        .contentShape(Rectangle())
     }
 }

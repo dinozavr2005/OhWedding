@@ -62,15 +62,15 @@ enum ExpenseCategory: String, CaseIterable {
 
     var icon: String {
         switch self {
-        case .banquet: return "fork.knife"
-        case .invitation: return "envelope"
-        case .creativeTeam: return "person.3"
-        case .welcome: return "hand.wave"
-        case .showProgram: return "sparkles"
-        case .videoProduction: return "video"
-        case .direction: return "theatermasks"
-        case .morning: return "sunrise"
-        case .other: return "square.grid.2x2"
+        case .banquet: return "overlay1"
+        case .invitation: return "overlay2"
+        case .creativeTeam: return "overlay3"
+        case .welcome: return "overlay4"
+        case .showProgram: return "overlay5"
+        case .videoProduction: return "overlay6"
+        case .direction: return "overlay7"
+        case .morning: return "overlay8"
+        case .other: return "overlay9"
         }
     }
 
