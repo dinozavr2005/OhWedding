@@ -34,12 +34,11 @@ struct SeatingTableView: View {
                 ScrollView {
                     VStack(spacing: 4) {
                         ForEach(table.guests) { guest in
-                            Text(guest.name)
+                            Text(guest.plusOne ? "\(guest.name) +1" : guest.name)
                                 .font(.caption)
                                 .lineLimit(1)
                                 .minimumScaleFactor(0.5)
                                 .frame(maxWidth: 130)
-                                // 👇 добавили возможность перетаскивать гостя наружу
                                 .onDrag {
                                     NSItemProvider(object: guest.uuid.uuidString as NSString)
                                 }

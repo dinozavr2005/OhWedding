@@ -48,7 +48,7 @@ struct SeatingTablesView: View {
                                 .font(.headline)
                             Text("\(occupied) из \(table.capacity)")
                                 .font(.subheadline)
-                                .foregroundColor(.secondary)
+                                .foregroundColor(occupied > table.capacity ? .red : .secondary)
                         }
                         Spacer()
                         Text(table.shape.rawValue)

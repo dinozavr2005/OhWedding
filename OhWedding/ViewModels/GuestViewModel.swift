@@ -134,12 +134,6 @@ final class GuestViewModel: ObservableObject {
                   capacity: Int,
                   shape: TableShape,
                   guests: [Guest]) {
-        // простая валидация по вместимости
-        let occupied = guests.reduce(0) { $0 + ($1.plusOne ? 2 : 1) }
-        guard occupied <= capacity else {
-            print("⚠️ Слишком мало мест: \(occupied) > \(capacity)")
-            return
-        }
 
         let table = SeatingTable(name: name, capacity: capacity, shape: shape)
         context.insert(table)
@@ -166,21 +160,10 @@ final class GuestViewModel: ObservableObject {
 
         // если меняем capacity без смены состава — тоже валидируем
         if let newCap = capacity {
-            let occupiedNow = table.guests.reduce(0) { $0 + ($1.plusOne ? 2 : 1) }
-            guard occupiedNow <= newCap else {
-                print("⚠️ Слишком мало мест: \(occupiedNow) > \(newCap)")
-                return
-            }
             table.capacity = newCap
         }
 
         if let newGuests {
-            let occupied = newGuests.reduce(0) { $0 + ($1.plusOne ? 2 : 1) }
-            guard occupied <= table.capacity else {
-                print("⚠️ Слишком мало мест: \(occupied) > \(table.capacity)")
-                return
-            }
-
             let oldSet = Set(table.guests.map(\.uuid))
             let newSet = Set(newGuests.map(\.uuid))
 

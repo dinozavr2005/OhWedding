@@ -11,14 +11,14 @@ struct EditTableView: View {
     @Environment(\.dismiss) var dismiss
 
     let availableGuests: [Guest]
-    /// onSave должен дергать VM:
-    /// viewModel.updateTable(using: context, table:originalTable, name:capacity:shape:newGuests:)
     let onSave: (_ name: String, _ capacity: Int, _ shape: TableShape, _ guests: [Guest]) -> Void
 
     @State private var name: String
     @State private var capacity: Int
     @State private var shape: TableShape
     @State private var selectedGuestIDs: Set<UUID>
+
+    @State private var showOverCapacityAlert = false
 
     init(
         table: SeatingTable,
@@ -37,6 +37,12 @@ struct EditTableView: View {
         availableGuests
             .filter { selectedGuestIDs.contains($0.uuid) }
             .reduce(0) { $0 + ($1.plusOne ? 2 : 1) }
+    }
+
+    private func performSave() {
+        let selected = availableGuests.filter { selectedGuestIDs.contains($0.uuid) }
+        onSave(name, capacity, shape, selected)
+        dismiss()
     }
 
     var body: some View {
@@ -78,12 +84,22 @@ struct EditTableView: View {
                 }
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Сохранить") {
-                        let selected = availableGuests.filter { selectedGuestIDs.contains($0.uuid) }
-                        onSave(name, capacity, shape, selected)
-                        dismiss()
+                        if occupied > capacity {
+                            showOverCapacityAlert = true
+                        } else {
+                            performSave()
+                        }
                     }
-                    .disabled(name.isEmpty || occupied > capacity)
+                    .disabled(name.isEmpty)
                 }
+            }
+            .alert("Превышена вместимость", isPresented: $showOverCapacityAlert) {
+                Button("Отмена", role: .cancel) { }
+                Button("Сохранить всё равно", role: .destructive) {
+                    performSave()
+                }
+            } message: {
+                Text("Занято \(occupied) мест при вместимости \(capacity). Сохранить стол всё равно?")
             }
         }
     }

@@ -52,16 +52,8 @@ struct SeatingDragView: View {
                 ScrollView(.horizontal, showsIndicators: false) {
                     LazyHGrid(rows: guestRows, spacing: 10) {
                         ForEach(unseatedGuests) { guest in
-                            Text(guest.name)
-                                .font(.system(size: 16))
-                                .padding(.horizontal, 12)
-                                .padding(.vertical, 6)
-                                .frame(height: 40)
-                                .background(Color.blue.opacity(0.2))
-                                .cornerRadius(8)
-                                .onDrag {
-                                    NSItemProvider(object: guest.uuid.uuidString as NSString)
-                                }
+                            PlusOneGuestChip(guest: guest)
+                                .onDrag { NSItemProvider(object: guest.uuid.uuidString as NSString) }
                         }
                     }
                     .padding(.horizontal)
