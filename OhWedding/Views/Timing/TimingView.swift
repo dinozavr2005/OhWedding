@@ -61,6 +61,7 @@ struct TimingView: View {
             .padding(.top, 16)
         }
         .navigationTitle("Тайминг дня")
+        .appBackground()
         .toolbar {
             Button(viewModel.isEditing ? "Готово" : "Редактировать") {
                 withAnimation(.easeInOut) {

@@ -83,7 +83,7 @@ struct SeatingDragView: View {
                 .frame(height: 90)
                 .background(Color(UIColor.systemBackground))
             }
-            .navigationTitle("Рассадка")
+            .navigationTitle("Схема столов")
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Готово") {

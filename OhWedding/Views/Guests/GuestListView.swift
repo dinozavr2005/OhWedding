@@ -7,73 +7,41 @@
 
 import SwiftUI
 
-enum GuestViewSegment: String, CaseIterable {
-    case list = "Список"
-    case seating = "Рассадка"
-}
-
 struct GuestListView: View {
     @Environment(\.modelContext) private var modelContext
     @StateObject private var viewModel = GuestViewModel()
 
     @State private var showingAddGuest = false
     @State private var showingImportView = false
-    @State private var showingAddTable = false
-    @State private var showingSeatingDragView = false
 
     @State private var selectedGuest: Guest?
-    @State private var selectedTable: SeatingTable?
-    @State private var selectedSegment: GuestViewSegment = .list
+    @State private var navigateToSeating = false
 
     var body: some View {
         VStack(spacing: 0) {
-            Picker("", selection: $selectedSegment) {
-                ForEach(GuestViewSegment.allCases, id: \.self) {
-                    Text($0.rawValue).tag($0)
-                }
-            }
-            .pickerStyle(.segmented)
-            .padding()
-
-            if selectedSegment == .list {
-                guestListSection
-            } else {
-                seatingSection
-            }
+            guestListSection
         }
         .navigationTitle("Гости")
+        .appBackground()
         .onAppear {
             viewModel.loadGuests(using: modelContext)
             viewModel.loadTables(using: modelContext)
         }
+        .background(
+            NavigationLink(isActive: $navigateToSeating) {
+                SeatingTablesView(viewModel: viewModel)
+            } label: { EmptyView() }
+                .hidden()
+        )
         .toolbar {
-            ToolbarItemGroup(placement: .navigationBarTrailing) {
-                if selectedSegment == .list {
-                    Button {
-                        showingAddGuest = true
-                    } label: {
-                        Image(systemName: "person.badge.plus")
-                    }
-                    Button {
-                        showingImportView = true
-                    } label: {
-                        Image(systemName: "list.bullet.rectangle")
-                    }
-                } else {
-                    Button {
-                        showingAddTable = true
-                    } label: {
-                        Image(systemName: "plus.circle")
-                    }
-                    Button {
-                        showingSeatingDragView = true
-                    } label: {
-                        Image(systemName: "square.grid.3x2")
-                    }
+            ToolbarItem(placement: .navigationBarTrailing) {
+                Button {
+                    showingAddGuest = true
+                } label: {
+                    Image(systemName: "plus")
                 }
             }
         }
-        // Sheets
         .sheet(isPresented: $showingAddGuest) {
             AddGuestView(viewModel: viewModel)
         }
@@ -87,136 +55,87 @@ struct GuestListView: View {
                 viewModel.addGuests(using: modelContext, guests: guests)
             }
         }
-        .sheet(isPresented: $showingAddTable) {
-            AddTableView(availableGuests: viewModel.unassignedGuests) { name, capacity, shape, selected in
-                viewModel.addTable(using: modelContext,
-                                   name: name,
-                                   capacity: capacity,
-                                   shape: shape,
-                                   guests: selected)
-            }
-        }
-        .sheet(item: $selectedTable) { table in
-            EditTableView(
-                table: table,
-                availableGuests: viewModel.availableGuests(for: table)
-            ) { name, capacity, shape, newGuests in
-                viewModel.updateTable(using: modelContext,
-                                      table: table,
-                                      name: name,
-                                      capacity: capacity,
-                                      shape: shape,
-                                      newGuests: newGuests)
-            }
-        }
-        .sheet(isPresented: $showingSeatingDragView) {
-            SeatingDragView(
-                guests: viewModel.guests,
-                tables: $viewModel.tables,
-                onUpdate: { }
-            )
-        }
     }
 
     private var guestListSection: some View {
         VStack(spacing: 0) {
-            TextField("Поиск гостей", text: $viewModel.searchText)
-                .textFieldStyle(.roundedBorder)
+            // Top actions
+            HStack(spacing: 12) {
+                Button {
+                    navigateToSeating = true
+                } label: {
+                    HStack(spacing: 10) {
+                        Image(systemName: "square.grid.3x2")
+                        Text("Рассадка")
+                            .font(.manropeBold(size: 17))
+                    }
+                    .frame(maxWidth: .infinity)
+                    .frame(height: 48)
+                }
+                .buttonStyle(PrimaryActionButtonStyle())
+
+                Button {
+                    showingImportView = true
+                } label: {
+                    HStack(spacing: 10) {
+                        Image(systemName: "square.and.arrow.up")
+                        Text("Импорт")
+                            .font(.manropeBold(size: 17))
+                    }
+                    .frame(maxWidth: .infinity)
+                    .frame(height: 48)
+                }
+                .buttonStyle(SecondaryActionButtonStyle())
+            }
+            .padding(.horizontal)
+            .padding(.top, 8)
+            .padding(.bottom, 12)
+
+            // Search
+            SearchBar(placeholder: "Поиск гостей", text: $viewModel.searchText)
                 .padding(.horizontal)
                 .padding(.bottom, 8)
 
             List {
-                Section {
-                    HStack {
-                        statItem(title: "Всего гостей", value: viewModel.totalGuestsWithPlusOne)
-                        Spacer()
-                        statItem(title: "Подтвердили", value: viewModel.confirmedGuestsWithPlusOne, color: .green)
-                    }
-                    .padding(.vertical, 8)
-                }
+                StatCardsRow(
+                    total: viewModel.totalGuestsWithPlusOne,
+                    confirmed: viewModel.confirmedGuestsWithPlusOne
+                )
+                .listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 8, trailing: 0))
+                .listRowBackground(Color.clear)
+                .listRowSeparator(.hidden)
 
-                Section {
-                    ForEach(viewModel.filteredGuests) { guest in
-                        GuestRow(
-                            guest: guest,
-                            onStatusTap: {
-                                viewModel.updateGuest(using: modelContext, guest: guest) {
-                                    $0.status = $0.status.next()
-                                }
+                ForEach(viewModel.filteredGuests) { guest in
+                    GuestRow(
+                        guest: guest,
+                        onStatusTap: {
+                            viewModel.updateGuest(using: modelContext, guest: guest) {
+                                $0.status = $0.status.next()
                             }
-                        )
-                        .contentShape(Rectangle())
-                        .onTapGesture {
-                            selectedGuest = guest
                         }
-                    }
-                    .onDelete { offsets in
-                        offsets
-                            .map { viewModel.filteredGuests[$0] }
-                            .forEach { viewModel.deleteGuest(using: modelContext, guest: $0) }
-                    }
-                }
-            }
-            .listStyle(.insetGrouped)
-        }
-    }
-
-    private var seatingSection: some View {
-        List {
-            Section {
-                HStack {
-                    statItem(title: "Всего столов", value: viewModel.totalTables)
-                    Spacer()
-                    statItem(title: "Без места", value: viewModel.unassignedGuestsCountWithPlusOne, color: .orange)
-                }
-                .padding(.vertical, 8)
-            }
-
-            Section(header: Text("Столы")) {
-                ForEach(viewModel.tables) { table in
-                    let occupied = table.guests.reduce(0) { $0 + ($1.plusOne ? 2 : 1) }
-
-                    HStack {
-                        VStack(alignment: .leading) {
-                            Text(table.name)
-                                .font(.headline)
-                            Text("\(occupied) из \(table.capacity)")
-                                .font(.subheadline)
-                                .foregroundColor(.secondary)
-                        }
-                        Spacer()
-                        Text(table.shape.rawValue)
-                            .font(.caption)
-                            .foregroundColor(.secondary)
-                    }
+                    )
                     .contentShape(Rectangle())
                     .onTapGesture {
-                        selectedTable = table
+                        selectedGuest = guest
                     }
                 }
                 .onDelete { offsets in
-                    offsets.map { viewModel.tables[$0] }
-                           .forEach { viewModel.deleteTable(using: modelContext, table: $0) }
+                    offsets
+                        .map { viewModel.filteredGuests[$0] }
+                        .forEach { viewModel.deleteGuest(using: modelContext, guest: $0) }
                 }
-            }
-        }
-        .listStyle(.insetGrouped)
-    }
 
-    private func statItem(title: String, value: Int, color: Color = .primary) -> some View {
-        VStack(alignment: .leading) {
-            Text(title)
-                .font(.caption)
-                .foregroundColor(.secondary)
-            Text("\(value)")
-                .font(.title2).bold()
-                .foregroundColor(color)
+            }
+            .contentMargins(.top, 0, for: .scrollContent)
+            .listStyle(.automatic)
+            .scrollContentBackground(.hidden)
         }
     }
 }
 
-
 #Preview {
-    GuestListView()
-        .environmentObject(AppModel.shared)
+    NavigationStack {
+        GuestListView()
+            .environmentObject(AppModel.shared)
+    }
 }

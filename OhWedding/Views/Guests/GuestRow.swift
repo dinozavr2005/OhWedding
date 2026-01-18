@@ -25,7 +25,7 @@ struct GuestRow: View {
 
                 HStack {
                     Image(systemName: "phone")
-                        .foregroundColor(.blue)
+                        .foregroundColor(.purple)
                     Text(guest.phone)
                         .font(.caption)
                         .foregroundColor(.secondary)

@@ -73,6 +73,7 @@ struct AddTableView: View {
                 }
             }
             .navigationTitle("Новый стол")
+            .appBackground() 
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button("Отмена") { dismiss() }

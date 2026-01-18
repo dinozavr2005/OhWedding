@@ -34,6 +34,7 @@ struct AddGuestView: View {
                     TextField("Ограничения в питании", text: $dietaryRestrictions)
                 }
             }
+            .appBackground()
             .navigationTitle("Новый гость")
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {

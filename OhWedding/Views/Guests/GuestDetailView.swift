@@ -41,6 +41,7 @@ struct GuestDetailView: View {
                 }
             }
             .navigationTitle("Информация о госте")
+            .appBackground()
             .navigationBarItems(
                 leading: Button("Отмена") { dismiss() },
                 trailing: Button("Сохранить") {
