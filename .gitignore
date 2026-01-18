@@ -4,6 +4,7 @@
 
 ## User settings
 xcuserdata/
+*.xcuserstate
 
 ## Obj-C/Swift specific
 *.hmap
@@ -28,8 +29,6 @@ playground.xcworkspace
 # Xcode automatically generates this directory with a .xcworkspacedata file and xcuserdata
 # hence it is not needed unless you have added a package configuration file to your project
 # .swiftpm
-
-.build/
 
 # CocoaPods
 #
@@ -61,4 +60,7 @@ fastlane/Preview.html
 fastlane/screenshots/**/*.png
 fastlane/test_output
 
+## Build products
 DerivedData/
+.build/
+.DS_Store
