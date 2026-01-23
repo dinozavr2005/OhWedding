@@ -36,7 +36,7 @@ final class WeddingInfoViewModel: ObservableObject {
         info.brideName = bride
         info.weddingDate = date
         save(context)
-        objectWillChange.send() // 🔥 чтобы гарантированно пересчитался UI
+        objectWillChange.send()
     }
 
     private func save(_ context: ModelContext) {
@@ -45,13 +45,12 @@ final class WeddingInfoViewModel: ObservableObject {
 }
 
 extension WeddingInfoViewModel {
-    var daysUntilWedding: Int {
-        guard let info = info else { return 0 }
+    var daysUntilWedding: Int? {
+        guard let info, let date = info.weddingDate else { return nil }
         let calendar = Calendar.current
         let today = calendar.startOfDay(for: Date())
-        let weddingDay = calendar.startOfDay(for: info.weddingDate)
-        let components = calendar.dateComponents([.day], from: today, to: weddingDay)
-        return components.day ?? 0
+        let weddingDay = calendar.startOfDay(for: date)
+        return calendar.dateComponents([.day], from: today, to: weddingDay).day
     }
 
     var weddingTitle: String {

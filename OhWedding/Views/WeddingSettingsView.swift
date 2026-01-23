@@ -11,7 +11,7 @@ import SwiftData
 struct WeddingSettingsView: View {
     @Environment(\.dismiss) var dismiss
     @Environment(\.modelContext) private var context
-    @StateObject private var viewModel = WeddingInfoViewModel()
+    @EnvironmentObject var viewModel: WeddingInfoViewModel
 
     // локальные стейты (редактируем копию)
     @State private var groomName: String = ""
@@ -68,7 +68,7 @@ struct WeddingSettingsView: View {
                 if let info = viewModel.info {
                     groomName = info.groomName
                     brideName = info.brideName
-                    weddingDate = info.weddingDate
+                    weddingDate = info.weddingDate ?? Date()
                 }
             }
         }

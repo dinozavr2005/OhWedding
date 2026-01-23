@@ -5,12 +5,12 @@ import SwiftData
 final class WeddingInfo {
     var groomName: String
     var brideName: String
-    var weddingDate: Date
+    var weddingDate: Date?
 
     init(
         groomName: String = "",
         brideName: String = "",
-        weddingDate: Date = Date()
+        weddingDate: Date? = nil
     ) {
         self.groomName = groomName
         self.brideName = brideName

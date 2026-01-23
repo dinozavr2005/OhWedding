@@ -8,22 +8,28 @@
 import SwiftUI
 
 struct CountdownCard: View {
-    let days: Int
+    let days: Int?
 
     var body: some View {
         VStack(spacing: 4) {
             Spacer()
-            Text("До свадьбы осталось")
+            
+            Text(titleText)
                 .font(.manropeMedium(size: 16))
                 .foregroundColor(.black.opacity(0.7))
 
-            Text("\(days)")
-                .font(.manropeBold(size: 64))
-                .foregroundColor(.black)
+            if let days {
+                Text(days == 0 ? "0" : "\(days)")
+                    .font(.manropeBold(size: 64))
+                    .foregroundColor(.black)
+            }
 
-            Text(daysString(for: days))
-                .font(.manropeMedium(size: 16))
-                .foregroundColor(.black.opacity(0.7))
+            if let days {
+                Text(days == 0 ? "Пусть он будет идеальным" : daysString(for: days))
+                    .font(.manropeMedium(size: 16))
+                    .foregroundColor(.black.opacity(0.7))
+            }
+
             Spacer()
         }
         .frame(maxWidth: .infinity, minHeight: 180)
@@ -41,6 +47,11 @@ struct CountdownCard: View {
             .cornerRadius(20)
             .shadow(color: .black.opacity(0.25), radius: 4, x: 0, y: 8)
         )
+    }
+
+    private var titleText: String {
+        guard let days else { return "Укажите дату свадьбы в настройках" }
+        return days == 0 ? "Сегодня день свадьбы" : "До свадьбы осталось"
     }
 
     private func daysString(for number: Int) -> String {

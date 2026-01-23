@@ -1,5 +1,5 @@
 //
-//  TableViewCell.swift
+//  SeatingTableView.swift
 //  OhWedding
 //
 //  Created by Buikliskii Vladimir on 02.08.2025.
