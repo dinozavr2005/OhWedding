@@ -2,6 +2,8 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>NSContactsUsageDescription</key>
+	<string>Приложению нужен доступ к контактам, чтобы вы могли выбрать гостей.</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>Manrope-VariableFont_wght.ttf</string>
