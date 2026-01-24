@@ -8,80 +8,88 @@
 import SwiftUI
 import SwiftData
 
+// MARK: - MainTabView
+
 struct MainTabView: View {
+    
+    // MARK: - State
+    
     @State private var selectedTab = 0
     @Environment(\.modelContext) private var context
-
+    
+    // MARK: - Body
+    
     var body: some View {
         TabView(selection: $selectedTab) {
-            HomeView()
-                .tabItem {
-                    Label {
-                        Text("Главная")
-                    } icon: {
-                        Image("houseIcon")
-                            .renderingMode(.template)
-                    }
-                }
-                .tag(0)
-
-            TasksTabView()
-                .tabItem {
-                    Label {
-                        Text("Задачи")
-                    } icon: {
-                        Image("checklistIcon")
-                            .renderingMode(.template)
-                    }
-                }
-                .tag(1)
-
-            GuestsTabView()
-                .tabItem {
-                    Label("Гости", systemImage: "person.2.fill")
-                }
-                .tag(2)
-
-            BudgetTabView()
-                .tabItem {
-                    Label {
-                        Text("Бюджет")
-                    } icon: {
-                        Image("banknote")
-                            .renderingMode(.template)
-                    }
-                }
-                .tag(3)
+            homeTab
+            tasksTab
+            guestsTab
+            budgetTab
         }
         .tint(Color(hex: "6C5CE7"))
     }
 }
 
-// MARK: - Tab Views
-struct TasksTabView: View {
-    var body: some View {
+// MARK: - Tabs
+
+private extension MainTabView {
+    
+    var homeTab: some View {
+        HomeView()
+            .tabItem {
+                Label {
+                    Text("Главная")
+                } icon: {
+                    Image("houseIcon")
+                        .renderingMode(.template)
+                }
+            }
+            .tag(0)
+    }
+    
+    var tasksTab: some View {
         NavigationView {
             TaskListView()
         }
+        .tabItem {
+            Label {
+                Text("Задачи")
+            } icon: {
+                Image("checklistIcon")
+                    .renderingMode(.template)
+            }
+        }
+        .tag(1)
     }
-}
-
-struct GuestsTabView: View {
-    var body: some View {
+    
+    var guestsTab: some View {
         NavigationView {
             GuestListView()
         }
+        .tabItem {
+            Label("Гости", systemImage: "person.2.fill")
+        }
+        .tag(2)
     }
-}
-
-struct BudgetTabView: View {
-    var body: some View {
+    
+    var budgetTab: some View {
         NavigationView {
             BudgetView()
         }
+        .tabItem {
+            Label {
+                Text("Бюджет")
+            } icon: {
+                Image("banknote")
+                    .renderingMode(.template)
+            }
+        }
+        .tag(3)
     }
 }
 
+// MARK: - Preview
+
 #Preview {
     MainTabView()
-} 
+}
