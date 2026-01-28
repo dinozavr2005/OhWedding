@@ -50,16 +50,18 @@ private extension HomeView {
     var content: some View {
         ScrollView {
             VStack(spacing: 24) {
-                CountdownCard(days: weddingVM.daysUntilWedding ?? 0)
+                CountdownCard(days: weddingVM.daysUntilWedding)
 
                 QuickActionsGridView()
 
-                ProgressOverviewView(
-                    progress: homeVM.progressPercentage,
-                    completedTasks: homeVM.completedTasks,
-                    totalTasks: homeVM.totalTasks,
-                    totalGuestsWithPlusOne: homeVM.totalGuestsWithPlusOne
-                )
+                if homeVM.progressPercentage > 0 {
+                    ProgressOverviewView(
+                        progress: homeVM.progressPercentage,
+                        completedTasks: homeVM.completedTasks,
+                        totalTasks: homeVM.totalTasks,
+                        totalGuestsWithPlusOne: homeVM.totalGuestsWithPlusOne
+                    )
+                }
             }
             .padding(.horizontal, 30)
             .padding(.top, 16)
@@ -67,7 +69,6 @@ private extension HomeView {
         .appBackground()
     }
 }
-
 // MARK: - Toolbar & Sheets
 
 private extension HomeView {
