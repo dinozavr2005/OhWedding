@@ -8,7 +8,8 @@
 import SwiftUI
 
 struct AddExpenseView: View {
-    @Environment(\.dismiss) var dismiss
+    @Environment(\.dismiss) private var dismiss
+
     @State private var title = ""
     @State private var amount = ""
     @State private var advance = ""
@@ -21,17 +22,39 @@ struct AddExpenseView: View {
 
     private var subcategoryOptions: [String] { category.subcategories }
 
-    /// Автоматический расчёт долга
-    private var debt: Double {
-        let total = Double(amount) ?? 0
-        let paid = Double(advance) ?? 0
-        return max(total - paid, 0)
-    }
-
     init(initialCategory: ExpenseCategory = .other,
          onAdd: @escaping (Expense) -> Void) {
         _category = State(initialValue: initialCategory)
         self.onAdd = onAdd
+    }
+
+    // MARK: - Helpers
+
+    private func cleanNumberString(_ s: String) -> String {
+        s.replacingOccurrences(of: " ", with: "")
+            .replacingOccurrences(of: "\u{00A0}", with: "")  // NBSP
+            .replacingOccurrences(of: "\u{202F}", with: "")  // narrow NBSP
+    }
+
+    private var amountInt: Int? {
+        let t = cleanNumberString(amount)
+        return t.isEmpty ? nil : Int(t)
+    }
+
+    private var advanceInt: Int {
+        let t = cleanNumberString(advance)
+        return Int(t) ?? 0
+    }
+
+    /// Автоматический расчёт долга
+    private var debt: Int {
+        let total = amountInt ?? 0
+        let paid = min(advanceInt, total)
+        return max(total - paid, 0)
+    }
+
+    private var canAdd: Bool {
+        !title.isEmpty && amountInt != nil
     }
 
     var body: some View {
@@ -95,15 +118,15 @@ struct AddExpenseView: View {
                 // MARK: - Финансы
                 Section(header: Text("Финансы")) {
                     TextField("Сумма", text: $amount)
-                        .keyboardType(.decimalPad)
+                        .keyboardType(.numberPad)
 
                     TextField("Аванс", text: $advance)
-                        .keyboardType(.decimalPad)
+                        .keyboardType(.numberPad)
 
                     HStack {
                         Text("Остаток")
                         Spacer()
-                        Text("\(debt, specifier: "%.0f") ₽")
+                        Text(debt, format: .number) + Text(" ₽")
                             .foregroundColor(.secondary)
                     }
 
@@ -127,14 +150,14 @@ struct AddExpenseView: View {
             .navigationBarItems(
                 leading: Button("Отмена") { dismiss() },
                 trailing: Button("Добавить") {
-                    guard let amountValue = Double(amount) else { return }
+                    guard let amountValue = amountInt else { return }
 
-                    let advanceValue = Double(advance) ?? 0
+                    let safeAdvance = min(advanceInt, amountValue)
 
                     let expense = Expense(
                         title: title,
                         amount: amountValue,
-                        advance: advanceValue,
+                        advance: safeAdvance,
                         category: category,
                         subcategory: subcategory.isEmpty ? nil : subcategory,
                         date: date,
@@ -144,7 +167,7 @@ struct AddExpenseView: View {
                     onAdd(expense)
                     dismiss()
                 }
-                .disabled(title.isEmpty || amount.isEmpty)
+                .disabled(!canAdd)
             )
         }
     }

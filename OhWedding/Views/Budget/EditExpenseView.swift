@@ -20,7 +20,7 @@ struct EditExpenseView: View {
     }
 
     // MARK: - Расчёты
-    private var remainingAmount: Double {
+    private var remainingAmount: Int {
         max(expense.amount - expense.advance, 0)
     }
 
@@ -114,17 +114,17 @@ private extension EditExpenseView {
     // MARK: - Финансы
     var financeSection: some View {
         Section("Финансы") {
-            TextField("Сумма", value: $expense.amount, format: .number.precision(.fractionLength(0)))
-                .keyboardType(.decimalPad)
+            TextField("Сумма", value: $expense.amount, format: .number)
+                .keyboardType(.numberPad)
 
-            TextField("Аванс", value: $expense.advance, format: .number.precision(.fractionLength(0)))
-                .keyboardType(.decimalPad)
+            TextField("Аванс", value: $expense.advance, format: .number)
+                .keyboardType(.numberPad)
 
             // 💰 Остаток
             HStack {
                 Text("Остаток")
                 Spacer()
-                Text("\(remainingAmount, specifier: "%.0f") ₽")
+                Text(remainingAmount, format: .number) + Text(" ₽")
                     .foregroundColor(.secondary)
             }
 
@@ -144,15 +144,5 @@ private extension EditExpenseView {
             DatePicker("Дата", selection: $expense.date, displayedComponents: .date)
             TextField("Заметки", text: $expense.notes)
         }
-    }
-}
-
-// MARK: - Форматтер для чисел
-extension NumberFormatter {
-    static var decimal0: NumberFormatter {
-        let f = NumberFormatter()
-        f.numberStyle = .decimal
-        f.maximumFractionDigits = 0
-        return f
     }
 }

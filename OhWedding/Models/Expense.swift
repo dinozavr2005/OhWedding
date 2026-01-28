@@ -5,8 +5,8 @@ import SwiftData
 final class Expense {
     @Attribute(.unique) var id: UUID
     var title: String
-    var amount: Double
-    var advance: Double
+    var amount: Int
+    var advance: Int
     var categoryRaw: String
     var subcategoryRaw: String?
     var date: Date
@@ -14,12 +14,11 @@ final class Expense {
 
     init(id: UUID = UUID(),
          title: String,
-         amount: Double,
-         advance: Double = 0,
+         amount: Int,
+         advance: Int = 0,
          category: ExpenseCategory,
          subcategory: String? = nil,
          date: Date,
-         isPaid: Bool = false,
          notes: String = "") {
         self.id = id
         self.title = title
@@ -40,7 +39,7 @@ final class Expense {
         get { subcategoryRaw ?? "" }
         set { subcategoryRaw = newValue }
     }
-    var debt: Double {
+    var debt: Int {
         max(amount - advance, 0)
     }
 

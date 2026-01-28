@@ -10,18 +10,22 @@ import SwiftUI
 struct CategoryCell: View {
     let category: ExpenseCategory
     let isExpanded: Bool
-    let totalBudget: Double
+    let totalBudget: Int
     let expenses: [Expense]
     let onExpandToggle: () -> Void
     let onTap: () -> Void
-    let amountProvider: (String) -> Double
+    let amountProvider: (String) -> Int
+
+    private var categoryAmount: Int {
+        expenses.reduce(0) { $0 + $1.amount }
+    }
 
     var body: some View {
         VStack(alignment: .leading, spacing: 4) {
             HStack {
                 CategoryRow(
                     category: category,
-                    amount: expenses.reduce(0) { $0 + $1.amount },
+                    amount: categoryAmount,
                     total: totalBudget
                 )
                 .contentShape(Rectangle())
@@ -40,13 +44,15 @@ struct CategoryCell: View {
             }
 
             if isExpanded {
-                ForEach(category.subcategories, id: \.self) { subcategory in
+                ForEach(category.subcategories, id: \.self) { sub in
                     HStack {
-                        Text(subcategory)
+                        Text(sub)
                             .font(.subheadline)
                             .foregroundColor(.secondary)
+
                         Spacer()
-                        Text(String(format: "%.0f ₽", amountProvider(subcategory)))
+
+                        Text(amountProvider(sub), format: .number) + Text(" ₽")
                             .font(.subheadline)
                             .foregroundColor(.secondary)
                     }

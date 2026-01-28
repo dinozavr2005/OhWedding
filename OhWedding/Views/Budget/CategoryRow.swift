@@ -9,12 +9,12 @@ import SwiftUI
 
 struct CategoryRow: View {
     let category: ExpenseCategory
-    let amount: Double
-    let total: Double
+    let amount: Int
+    let total: Int
 
     private var progress: Double {
         guard total > 0 else { return 0 }
-        return min(amount / total, 1.0)
+        return min(Double(amount) / Double(total), 1.0)
     }
 
     var body: some View {
@@ -30,18 +30,14 @@ struct CategoryRow: View {
                     .font(.manropeSemiBold(size: 16))
                     .foregroundColor(.primary)
 
-                Text(amount.formatted(
-                    .number
-                        .grouping(.automatic)   // ← 100 000
-                        .precision(.fractionLength(0))
-                ) + " ₽")
-                .font(.manropeRegular(size: 14))
-                .foregroundColor(.black)
+                Text(amount, format: .number.grouping(.automatic)) + Text(" ₽")
+                    .font(.manropeRegular(size: 14))
+                    .foregroundColor(.black)
             }
 
             Spacer()
 
-            Text(progress.formatted(.percent.precision(.fractionLength(0))))
+            Text(progress, format: .percent.precision(.fractionLength(0)))
                 .font(.manropeRegular(size: 14))
                 .foregroundColor(.secondary)
         }

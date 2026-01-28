@@ -43,17 +43,17 @@ final class BudgetViewModel: ObservableObject {
     }
 
     /// Общая сумма всех расходов
-    var totalExpenses: Double {
+    var totalExpenses: Int {
         expenses.reduce(0) { $0 + $1.amount }
     }
 
     /// Сумма реально оплаченная (учитывает авансы)
-    var paidAmount: Double {
+    var paidAmount: Int {
         expenses.reduce(0) { $0 + min($1.advance, $1.amount) }
     }
 
     /// Сумма к оплате (долг)
-    var unpaidAmount: Double {
+    var unpaidAmount: Int {
         expenses.reduce(0) { $0 + max($1.amount - $1.advance, 0) }
     }
 
@@ -63,12 +63,12 @@ final class BudgetViewModel: ObservableObject {
     }
 
     /// Остаток бюджета (неизрасходованная сумма)
-    func remainingBudget(totalBudget: Double) -> Double {
+    func remainingBudget(totalBudget: Int) -> Int {
         max(totalBudget - totalExpenses, 0)
     }
 
     /// Подсчёт суммы по подкатегории
-    func amount(for category: ExpenseCategory, subcategory: String) -> Double {
+    func amount(for category: ExpenseCategory, subcategory: String) -> Int {
         expenses
             .filter { $0.category == category && $0.subcategoryRaw == subcategory }
             .reduce(0) { $0 + $1.amount }

@@ -55,28 +55,26 @@ private extension BudgetView {
                     Text("Расходы:")
                         .font(.manropeSemiBold(size: 16))
                     Spacer()
-                    Text(viewModel.totalExpenses.formattedCurrency)
-                        .font(.manropeSemiBold(size: 16))
+                    Text(viewModel.totalExpenses, format: .number) + Text(" ₽")
+                }
+                .font(.manropeSemiBold(size: 16))
+
+                HStack {
+                    Text(" Предоплата:")
+                        .font(.manropeRegular(size: 14))
+                        .foregroundColor(.secondary)
+                    Spacer()
+                    Text(viewModel.paidAmount, format: .number) + Text(" ₽")
+                        .font(.manropeSemiBold(size: 14))
                 }
 
-                VStack(alignment: .leading, spacing: 4) {
-                    HStack {
-                        Text(" Предоплата:")
-                            .font(.manropeRegular(size: 14))
-                            .foregroundColor(.secondary)
-                        Spacer()
-                        Text(viewModel.paidAmount.formattedCurrency)
-                            .font(.manropeSemiBold(size: 14))
-                    }
-
-                    HStack {
-                        Text(" Остаток:")
-                            .font(.manropeRegular(size: 14))
-                            .foregroundColor(.secondary)
-                        Spacer()
-                        Text(viewModel.unpaidAmount.formattedCurrency)
-                            .font(.manropeSemiBold(size: 14))
-                    }
+                HStack {
+                    Text(" Остаток:")
+                        .font(.manropeRegular(size: 14))
+                        .foregroundColor(.secondary)
+                    Spacer()
+                    Text(viewModel.unpaidAmount, format: .number) + Text(" ₽")
+                        .font(.manropeSemiBold(size: 14))
                 }
             }
             .padding(.vertical, 8)

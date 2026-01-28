@@ -18,15 +18,23 @@ struct CategoryDetailView: View {
     @State private var showingAddExpense = false
     @State private var editingExpense: Expense?
 
-    //  Фильтрация расходов по категории локально (не нужен метод в VM)
+    // Фильтрация расходов по категории локально
     private var expensesInCategory: [Expense] {
         viewModel.expenses.filter { $0.category == category }
     }
 
-    //  Агрегаты по текущей категории
-    private var totalAmount: Double { expensesInCategory.reduce(0) { $0 + $1.amount } }
-    private var totalAdvance: Double { expensesInCategory.reduce(0) { $0 + $1.advance } }
-    private var totalDebt: Double { max(totalAmount - totalAdvance, 0) }
+    // Агрегаты по текущей категории
+    private var totalAmount: Int {
+        expensesInCategory.reduce(0) { $0 + $1.amount }
+    }
+
+    private var totalAdvance: Int {
+        expensesInCategory.reduce(0) { $0 + $1.advance }
+    }
+
+    private var totalDebt: Int {
+        max(totalAmount - totalAdvance, 0)
+    }
 
     var body: some View {
         VStack {
@@ -44,9 +52,25 @@ struct CategoryDetailView: View {
                     // Сводка
                     Section {
                         VStack(alignment: .leading, spacing: 8) {
-                            HStack { Text("Всего"); Spacer(); Text("\(totalAmount, specifier: "%.0f") ₽").bold() }
-                            HStack { Text("Аванс"); Spacer(); Text("\(totalAdvance, specifier: "%.0f") ₽").foregroundColor(.secondary) }
-                            HStack { Text("Остаток");  Spacer(); Text("\(totalDebt,   specifier: "%.0f") ₽").foregroundColor(totalDebt == 0 ? .green : .red) }
+                            HStack {
+                                Text("Всего")
+                                Spacer()
+                                (Text(totalAmount, format: .number) + Text(" ₽")).bold()
+                            }
+
+                            HStack {
+                                Text("Аванс")
+                                Spacer()
+                                Text(totalAdvance, format: .number) + Text(" ₽")
+                            }
+                            .foregroundColor(.secondary)
+
+                            HStack {
+                                Text("Остаток")
+                                Spacer()
+                                Text(totalDebt, format: .number) + Text(" ₽")
+                            }
+                            .foregroundColor(totalDebt == 0 ? .green : .red)
                         }
                         .font(.subheadline)
                         .padding(.vertical, 4)
@@ -62,22 +86,25 @@ struct CategoryDetailView: View {
                                     HStack {
                                         Text(expense.title).font(.headline)
                                         Spacer()
-                                        Text("\(expense.amount, specifier: "%.0f") ₽")
+                                        Text(expense.amount, format: .number) + Text(" ₽")
                                     }
+
                                     if !expense.subcategory.isEmpty {
                                         Text(expense.subcategory)
                                             .font(.caption)
                                             .foregroundColor(.secondary)
                                     }
+
                                     HStack(spacing: 8) {
                                         if expense.advance > 0 {
-                                            Text("Аванс: \(expense.advance, specifier: "%.0f") ₽")
-                                                .font(.caption2).foregroundColor(.secondary)
+                                            Text("Аванс: ") + Text(expense.advance, format: .number) + Text(" ₽")
                                         }
+
                                         Text(expense.isPaid ? "Оплачено" : "Не оплачено")
-                                            .font(.caption2)
                                             .foregroundColor(expense.isPaid ? .green : .orange)
                                     }
+                                    .font(.caption2)
+                                    .foregroundColor(.secondary)
                                 }
                                 .padding(.vertical, 4)
                             }
