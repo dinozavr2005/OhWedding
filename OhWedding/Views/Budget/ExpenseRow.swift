@@ -28,7 +28,7 @@ struct ExpenseRow: View {
             Spacer()
 
             VStack(alignment: .trailing) {
-                Text(String(format: "%.0f ₽", expense.amount))
+                Text(expense.amount, format: .number) + Text(" ₽")
                     .font(.headline)
 
                 Text(expense.isPaid ? "Оплачено" : "Не оплачено")
